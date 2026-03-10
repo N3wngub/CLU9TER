@@ -1637,9 +1637,9 @@
                 }
 
                 // 3. Unassign tasks (don't delete tasks so team progress isn't lost)
-                const tasksToUnassign = tasks.filter(t => t.assigneeId === uid);
-                for (const t of tasksToUnassign) {
-                    await updateDoc(doc(db, ...tasksPath, t.id), { assigneeId: '' });
+                const tasksToUnassign = tasks.filter(task => task.assigneeId === uid);
+                for (const task of tasksToUnassign) {
+                    await updateDoc(doc(db, ...tasksPath, task.id), { assigneeId: '' });
                 }
 
                 updateSyncUI(navigator.onLine ? 'online' : 'offline');
@@ -1782,8 +1782,8 @@
             }
 
             // Reset dock UI
-            ['board', 'dashboard', 'review', 'logs'].forEach(t => {
-                const btn = document.getElementById(`dock-${t}`);
+            ['board', 'dashboard', 'review', 'logs'].forEach(viewType => {
+                const btn = document.getElementById(`dock-${viewType}`);
                 if(btn) {
                     btn.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-50', 'dark:bg-indigo-900/30', 'font-semibold');
                     btn.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-800', 'font-medium');
@@ -1848,14 +1848,19 @@
         let appListenersAttached = false;
         function setupAppListeners() {
             updateUserUI(); renderAssigneeDropdown(); updateProjectDropdown();
-            if(appListenersAttached) { renderBoard(); renderPeerReview(); updateDashboard(); return; }
+            if(appListenersAttached) { 
+                try { renderBoard(); } catch(err) { console.error("Board render error", err); }
+                try { renderPeerReview(); } catch(err) { console.error("Peer review render error", err); }
+                try { updateDashboard(); } catch(err) { console.error("Dashboard error", err); }
+                return; 
+            }
 
             document.getElementById('loading-spinner').classList.remove('hidden');
 
             onSnapshot(collection(db, ...tasksPath), (snapshot) => {
                 tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if(currentUserProfile || isGuestMode) { 
-                    renderBoard(); 
+                    try { renderBoard(); } catch(err) { console.error("Board render error", err); }
                     updateProjectDropdown(); // Refresh dynamic projects
                     try { updateDashboard(); } catch(err) { console.error("Chart error", err); }
                 }
@@ -1867,13 +1872,15 @@
 
             onSnapshot(collection(db, ...logsPath), (snapshot) => {
                 logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0)); 
-                if(currentUserProfile || isGuestMode) renderLogs();
+                if(currentUserProfile || isGuestMode) {
+                    try { renderLogs(); } catch(err) { console.error("Logs render error", err); }
+                }
             }, e => console.error(e));
 
             onSnapshot(collection(db, ...reviewsPath), (snapshot) => {
                 reviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 if(currentUserProfile || isGuestMode) { 
-                    renderPeerReview(); 
+                    try { renderPeerReview(); } catch(err) { console.error("Peer review render error", err); }
                     try { updateDashboard(); } catch(err) { console.error("Chart error", err); }
                 }
             }, e => console.error(e));
@@ -1904,7 +1911,7 @@
             if (!select) return;
             const currentVal = select.value;
             
-            const projects = new Set(tasks.map(t => t.category || t('board.general')));
+            const projects = new Set(tasks.map(task => task.category || t('board.general')));
             projects.add(t('board.general')); // Ensure default exists
             
             select.innerHTML = '';
@@ -1970,11 +1977,11 @@
                 currentLang === 'th' ? 'ยืนยันลบหมวดหมู่' : 'Delete Category',
                 currentLang === 'th' ? `คุณแน่ใจหรือไม่ว่าจะลบหมวดหมู่ "${categoryName}"? งานทั้งหมดในหมวดหมู่นี้จะถูกย้ายไปที่ "ทั่วไป"` : `Are you sure you want to delete category "${categoryName}"? All tasks in it will be moved to "General".`,
                 async () => {
-                    const tasksToUpdate = tasks.filter(t => t.category === categoryName);
+                    const tasksToUpdate = tasks.filter(task => task.category === categoryName);
                     try {
                         updateSyncUI('syncing');
-                        const promises = tasksToUpdate.map(t => 
-                            updateDoc(doc(db, ...tasksPath, t.id), { category: '' })
+                        const promises = tasksToUpdate.map(task => 
+                            updateDoc(doc(db, ...tasksPath, task.id), { category: '' })
                         );
                         await Promise.all(promises);
                         
@@ -2092,7 +2099,7 @@
                 showToast(t('toast.guestNoEdit'), "error");
                 return;
             }
-            const task = tasks.find(t => t.id === taskId);
+            const task = tasks.find(taskItem => taskItem.id === taskId);
             if (!task) return;
 
             document.getElementById('task-form').reset();
@@ -2142,7 +2149,7 @@
                 currentLang === 'th' ? 'ยืนยันการลบ' : 'Confirm Deletion', 
                 t('confirm.deleteTask'), 
                 async () => {
-                    const task = tasks.find(t => t.id === taskId);
+                    const task = tasks.find(taskItem => taskItem.id === taskId);
                     const title = task ? task.title : 'Task';
                     try {
                         await runWithSyncStatus(deleteDoc(doc(db, ...tasksPath, taskId)));
@@ -2235,7 +2242,7 @@
                 document.getElementById('extend-task-title').value = currentTitle;
                 document.getElementById('extend-form').reset();
                 
-                const currentTask = tasks.find(t => t.id === taskId);
+                const currentTask = tasks.find(taskItem => taskItem.id === taskId);
                 if(currentTask) {
                     try {
                         const d = new Date(currentTask.dueDateMs);
@@ -2363,7 +2370,7 @@
 
         function renderBoard() {
             const cols = { todo: [], doing: [], done: [] };
-            tasks.forEach(t => { if(cols[t.status]) cols[t.status].push(t); });
+            tasks.forEach(task => { if(cols[task.status]) cols[task.status].push(task); });
 
             ['todo', 'doing', 'done'].forEach(status => {
                 const el = document.getElementById(`col-${status}`);
@@ -2372,8 +2379,9 @@
                 
                 // Group tasks by category
                 const categoryGroups = {};
+                const generalLabel = t('board.general');
                 cols[status].sort((a,b) => a.dueDateMs - b.dueDateMs).forEach(task => {
-                    const cat = task.category || t('board.general');
+                    const cat = task.category || generalLabel;
                     if(!categoryGroups[cat]) categoryGroups[cat] = [];
                     categoryGroups[cat].push(task);
                 });
@@ -2557,11 +2565,11 @@
         function updateDashboard() {
             if(document.getElementById('view-dashboard').classList.contains('hidden')) return;
             const total = tasks.length;
-            const doneTasks = tasks.filter(t => t.status === 'done');
+            const doneTasks = tasks.filter(task => task.status === 'done');
             let onTimeCount = 0, lateCount = 0;
 
-            doneTasks.forEach(t => {
-                if (t.completedAtMs && t.completedAtMs <= t.dueDateMs) onTimeCount++;
+            doneTasks.forEach(task => {
+                if (task.completedAtMs && task.completedAtMs <= task.dueDateMs) onTimeCount++;
                 else lateCount++;
             });
 
@@ -2575,8 +2583,8 @@
             if(centerTotal) centerTotal.textContent = total;
             
             // อัปเดตตัวเลขในกล่องสรุปสถานะงาน
-            const countTodo = tasks.filter(t=>t.status==='todo').length;
-            const countDoing = tasks.filter(t=>t.status==='doing').length;
+            const countTodo = tasks.filter(task=>task.status==='todo').length;
+            const countDoing = tasks.filter(task=>task.status==='doing').length;
             const countDone = doneTasks.length;
             
             const elTodo = document.getElementById('summary-count-todo');
@@ -2590,23 +2598,23 @@
             allProfiles.forEach(u => { userStats[u.uid] = { name: u.name, avatar: u.avatar, totalAssigned: 0, doneTotal: 0, doneOnTime: 0, doneLate: 0, totalWeight: 0, score: 0 }; });
 
             let globalTotalWeight = 0;
-            tasks.forEach(t => {
-                if (t.assigneeId === 'everyone') {
+            tasks.forEach(task => {
+                if (task.assigneeId === 'everyone') {
                     // Account for all active members
                     Object.keys(userStats).forEach(uid => {
                         userStats[uid].totalAssigned++;
-                        if(t.status === 'done') {
-                            userStats[uid].doneTotal++; userStats[uid].totalWeight += t.difficulty; 
+                        if(task.status === 'done') {
+                            userStats[uid].doneTotal++; userStats[uid].totalWeight += task.difficulty; 
                             // Add to global total weight only once per person to balance math
-                            globalTotalWeight += t.difficulty;
-                            if (t.completedAtMs <= t.dueDateMs) userStats[uid].doneOnTime++; else userStats[uid].doneLate++;
+                            globalTotalWeight += task.difficulty;
+                            if (task.completedAtMs <= task.dueDateMs) userStats[uid].doneOnTime++; else userStats[uid].doneLate++;
                         }
                     });
-                } else if(t.assigneeId && userStats[t.assigneeId]) {
-                    userStats[t.assigneeId].totalAssigned++;
-                    if(t.status === 'done') {
-                        userStats[t.assigneeId].doneTotal++; userStats[t.assigneeId].totalWeight += t.difficulty; globalTotalWeight += t.difficulty;
-                        if (t.completedAtMs <= t.dueDateMs) userStats[t.assigneeId].doneOnTime++; else userStats[t.assigneeId].doneLate++;
+                } else if(task.assigneeId && userStats[task.assigneeId]) {
+                    userStats[task.assigneeId].totalAssigned++;
+                    if(task.status === 'done') {
+                        userStats[task.assigneeId].doneTotal++; userStats[task.assigneeId].totalWeight += task.difficulty; globalTotalWeight += task.difficulty;
+                        if (task.completedAtMs <= task.dueDateMs) userStats[task.assigneeId].doneOnTime++; else userStats[task.assigneeId].doneLate++;
                     }
                 }
             });
@@ -2663,7 +2671,7 @@
             });
             if (Object.values(userStats).length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-gray-400 text-sm font-medium"><i class="fas fa-folder-open text-3xl mb-2 opacity-50 block"></i>${t('dash.noData')}</td></tr>`;
 
-            renderCharts(perfLabels, perfData, { todo: tasks.filter(t=>t.status==='todo').length, doing: tasks.filter(t=>t.status==='doing').length, done: doneTasks.length });
+            renderCharts(perfLabels, perfData, { todo: tasks.filter(task=>task.status==='todo').length, doing: tasks.filter(task=>task.status==='doing').length, done: doneTasks.length });
         }
 
         function updateChartColors() {
