@@ -272,6 +272,58 @@
             overscroll-behavior-x: none !important;
         }
 
+        /* ปรับ datetime-local input บน mobile */
+        @media (max-width: 640px) {
+            input[type="datetime-local"] {
+                font-size: 11px !important;
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+            input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+                font-size: 10px;
+                padding: 0;
+                margin-left: 2px;
+            }
+            input[type="datetime-local"]::-webkit-datetime-edit {
+                padding: 0;
+            }
+            input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
+                padding: 0;
+            }
+        }
+
+        /* Modal Fade Out Animation */
+        @keyframes modal-fade-out {
+            from { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            to { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes backdrop-fade-out {
+            from { 
+                opacity: 1;
+                backdrop-filter: blur(4px);
+            }
+            to { 
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+        }
+
+        .modal-closing .modal-content {
+            animation: modal-fade-out 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+
+        .modal-closing {
+            animation: backdrop-fade-out 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+
+
         /* Logo Loading Screen Animations */
         @keyframes fade-in-minimal {
             from { opacity: 0; }
@@ -1441,7 +1493,12 @@
         }
         
         window.closeSettingsModal = function() {
-            document.getElementById('settings-modal').classList.add('hidden');
+            const modal = document.getElementById('settings-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
         }
         
         window.toggleLanguage = function() {
@@ -2030,7 +2087,12 @@
         }
         
         window.closeDeleteConfirmModal = function() {
-            document.getElementById('delete-confirm-modal').classList.add('hidden');
+            const modal = document.getElementById('delete-confirm-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
         }
         
         window.checkDeleteConfirmText = function() {
@@ -2108,7 +2170,14 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('hidden'); }
+        window.closeProfileModal = function() { 
+            const modal = document.getElementById('profile-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
+        }
         window.randomizeAvatar = function() { document.getElementById('setup-avatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`; }
 
         window.submitProfile = async function(e) {
@@ -2165,7 +2234,14 @@
             }
         }
 
-        window.closePinModal = function() { document.getElementById('pin-modal').classList.add('hidden'); }
+        window.closePinModal = function() { 
+            const modal = document.getElementById('pin-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
+        }
         
         // Updated Verify PIN to handle both Login and Delete actions
         window.verifyPin = function(e) {
@@ -2423,7 +2499,12 @@
         }
         
         window.closeNewProjectModal = function() {
-            document.getElementById('new-project-modal').classList.add('hidden');
+            const modal = document.getElementById('new-project-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
         }
         
         window.confirmNewProject = function() {
@@ -2497,8 +2578,13 @@
         }
         
         window.closeConfirmModal = function() {
-            document.getElementById('confirm-modal').classList.add('hidden');
-            confirmActionCallback = null;
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+                confirmActionCallback = null;
+            }, 250);
         }
         
         document.getElementById('btn-confirm-action').addEventListener('click', () => {
@@ -2668,7 +2754,14 @@
             );
         }
 
-        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+        window.closeModal = function(id) { 
+            const modal = document.getElementById(id);
+            modal.classList.add('modal-closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-closing');
+            }, 250);
+        }
 
         window.submitTask = async function(e) {
             e.preventDefault();
