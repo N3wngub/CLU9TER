@@ -6,15 +6,15 @@
     <title>CLU9TER - ระบบประเมินและจัดการงานกลุ่ม</title>
     
     <!-- Favicon & PWA / Add to Home Screen -->
-    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-">
-    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-">
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/11cZ6UY46IS9zCB_3K6lcIs_nD0dJwUyj">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/11cZ6UY46IS9zCB_3K6lcIs_nD0dJwUyj">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="CLU9TER">
     <meta name="application-name" content="CLU9TER">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQ0xVOVRFUiIsInNob3J0X25hbWUiOiJDTFU5VEVSIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmOWZhZmIiLCJ0aGVtZV9jb2xvciI6IiM0ZjQ2ZTUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2QvMUJtRG9LOGtnNHZnZUNheXA2R0I3VDdTbmxuV2JBXzMtIiwic2l6ZXMiOiIxOTJ4MTkyIDUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQ0xVOVRFUiIsInNob3J0X25hbWUiOiJDTFU5VEVSIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmOWZhZmIiLCJ0aGVtZV9jb2xvciI6IiM0ZjQ2ZTUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2QvMTFjWjZVWTQ2SVM5ekNCXzNLNmxjSXNfbkQwZEp3VXlqIiwic2l6ZXMiOiIxOTJ4MTkyIDUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,60 +45,71 @@
             100% { transform: rotate(0deg); }
         }
         .object-cover { object-fit: cover; }
+        
+        /* Mobile Scroll Snap for Kanban */
+        .snap-container { scroll-snap-type: x mandatory; }
+        .snap-item { scroll-snap-align: center; scroll-margin: 16px; }
+        
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
 
     <!-- Auth Screen: Profile Selection -->
-    <div id="auth-screen" class="fixed inset-0 z-[60] bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 transition-colors duration-300">
+    <div id="auth-screen" class="fixed inset-0 z-[60] bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 transition-colors duration-300 overflow-y-auto">
         <!-- Top Bar Layout Fix to prevent overlapping -->
-        <div class="w-full flex justify-between items-start md:items-center px-6 py-6 absolute top-0 left-0 right-0">
+        <div class="w-full flex justify-between items-start md:items-center px-4 md:px-6 py-6 absolute top-0 left-0 right-0">
             <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
                 <div class="flex items-center space-x-3">
-                    <img src="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-" alt="CLU9TER Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm bg-white">
-                    <h1 class="text-2xl font-bold tracking-wider text-gray-800 dark:text-white">CLU9TER</h1>
+                    <img src="https://lh3.googleusercontent.com/d/11cZ6UY46IS9zCB_3K6lcIs_nD0dJwUyj" alt="CLU9TER Logo" class="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover shadow-sm bg-white">
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wider text-gray-800 dark:text-white">CLU9TER</h1>
                 </div>
                 <!-- Sync Status Auth -->
-                <div class="sync-status-indicator flex items-center space-x-1.5 text-xs font-medium px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 w-max">
+                <div class="sync-status-indicator flex items-center space-x-1.5 text-[10px] md:text-xs font-medium px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 w-max">
                     <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1" id="sync-text-auth">ตรวจสอบสถานะ...</span>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 md:space-x-3">
                 <!-- Language Toggle in Auth -->
-                <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-semibold text-sm">
+                <button onclick="toggleLanguage()" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-semibold text-xs md:text-sm">
                     <span id="lang-toggle-auth">EN</span>
                 </button>
                 <!-- Theme Toggle in Auth -->
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                <button onclick="toggleTheme()" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-xs md:text-sm">
                     <i class="fas fa-moon dark:hidden"></i>
                     <i class="fas fa-sun hidden dark:block"></i>
                 </button>
             </div>
         </div>
 
-        <div class="w-full max-w-5xl flex flex-col items-center justify-center mt-16 md:mt-0">
-            <h2 class="text-3xl md:text-5xl font-semibold mb-10 text-center text-gray-800 dark:text-white" id="profile-select-title">ใครกำลังใช้งานอยู่?</h2>
+        <div class="w-full max-w-5xl flex flex-col items-center justify-center mt-24 md:mt-0 pb-10">
+            <h2 class="text-2xl md:text-5xl font-semibold mb-8 md:mb-10 text-center text-gray-800 dark:text-white" id="profile-select-title">ใครกำลังใช้งานอยู่?</h2>
             
-            <div id="profiles-container" class="flex flex-wrap justify-center gap-6 md:gap-8 mb-16 relative z-10">
+            <div id="profiles-container" class="flex flex-wrap justify-center gap-4 md:gap-8 mb-12 md:mb-16 relative z-10 w-full max-w-2xl px-4">
                 <!-- Profiles injected here -->
-                <div class="text-center w-24 h-24 flex items-center justify-center border-2 border-gray-300 dark:border-gray-700 rounded-md animate-pulse">
-                    <span class="text-gray-500" id="auth-loading-text">Loading...</span>
+                <div class="text-center w-20 h-20 md:w-24 md:h-24 flex items-center justify-center border-2 border-gray-300 dark:border-gray-700 rounded-md animate-pulse">
+                    <span class="text-gray-500 text-xs md:text-sm" id="auth-loading-text">Loading...</span>
                 </div>
             </div>
 
-            <div class="flex flex-col items-center space-y-4 relative z-20">
-                <button id="btn-manage-profiles" onclick="toggleManageProfiles()" class="border border-gray-400 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-white px-6 py-2 uppercase tracking-widest text-sm transition-colors rounded-full relative">
+            <div class="flex flex-col items-center space-y-4 relative z-20 w-full px-6">
+                <button id="btn-manage-profiles" onclick="toggleManageProfiles()" class="border border-gray-400 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-white px-6 py-2 uppercase tracking-widest text-xs md:text-sm transition-colors rounded-full relative w-full max-w-xs">
                     <span id="auth-manage-text">จัดการโปรไฟล์</span>
                 </button>
                 
-                <div class="flex items-center space-x-3 text-gray-400 dark:text-gray-600">
-                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-20"></div>
-                    <span class="text-xs" id="auth-or-text">หรือ</span>
-                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-20"></div>
+                <div class="flex items-center space-x-3 text-gray-400 dark:text-gray-600 w-full max-w-xs justify-center">
+                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-16 md:w-20"></div>
+                    <span class="text-[10px] md:text-xs" id="auth-or-text">หรือ</span>
+                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-16 md:w-20"></div>
                 </div>
                 
-                <button onclick="loginAsGuest()" class="group flex items-center space-x-2 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500 dark:hover:border-amber-500 px-6 py-2.5 text-sm transition-all rounded-full bg-amber-50/50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/20 relative">
+                <button onclick="loginAsGuest()" class="group flex items-center justify-center space-x-2 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500 dark:hover:border-amber-500 px-6 py-2.5 text-xs md:text-sm transition-all rounded-full bg-amber-50/50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/20 relative w-full max-w-xs">
                     <i class="fas fa-eye group-hover:scale-110 transition-transform"></i>
                     <span class="font-medium" id="auth-guest-text">เข้าชมแบบ Guest (ดูอย่างเดียว)</span>
                 </button>
@@ -106,16 +117,18 @@
         </div>
     </div>
 
-    <!-- Modal: Create Profile -->
-    <div id="profile-modal" class="fixed inset-0 bg-black/60 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 w-full max-w-md rounded-2xl shadow-2xl relative">
+    <!-- Modal: Create/Edit Profile -->
+    <div id="profile-modal" class="fixed inset-0 bg-black/60 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 md:p-8 w-full max-w-md rounded-2xl shadow-2xl relative my-auto">
             <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button>
-            <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white" id="modal-add-profile-title">เพิ่มโปรไฟล์</h3>
+            <h3 class="text-xl md:text-2xl font-bold mb-6 text-gray-800 dark:text-white" id="modal-add-profile-title">เพิ่มโปรไฟล์</h3>
             
             <form id="profile-form" onsubmit="submitProfile(event)" class="space-y-6">
-                <div class="flex items-center space-x-6 border-b border-gray-100 dark:border-gray-700 pb-6">
-                    <div class="flex flex-col items-center space-y-3">
-                        <div class="relative w-24 h-24 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-100 dark:bg-gray-700 shrink-0 group cursor-pointer" onclick="randomizeAvatar()">
+                <input type="hidden" id="setup-mode" value="create">
+                <input type="hidden" id="setup-uid" value="">
+                <div class="flex flex-col md:flex-row items-center md:space-x-6 space-y-4 md:space-y-0 border-b border-gray-100 dark:border-gray-700 pb-6">
+                    <div class="flex flex-col items-center space-y-3 w-full md:w-auto">
+                        <div class="relative w-20 h-20 md:w-24 md:h-24 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-100 dark:bg-gray-700 shrink-0 group cursor-pointer" onclick="randomizeAvatar()">
                             <img id="setup-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=new" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                 <i class="fas fa-sync-alt text-white text-xl mb-1"></i>
@@ -130,21 +143,21 @@
                         </div>
                     </div>
                     <div class="flex-1 w-full">
-                        <input type="text" id="setup-name" required placeholder="ชื่อโปรไฟล์" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-lg">
+                        <input type="text" id="setup-name" required placeholder="ชื่อโปรไฟล์" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-base md:text-lg">
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-base font-semibold mb-1 text-gray-800 dark:text-white" id="modal-security-title">การตั้งค่าความปลอดภัย (ไม่บังคับ)</h4>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3" id="modal-security-desc">ตั้งค่า PIN 4 หลักเพื่อป้องกันผู้อื่นเข้าใช้งานและป้องกันการลบ</p>
-                    <div class="flex items-center space-x-4">
+                    <h4 class="text-sm md:text-base font-semibold mb-1 text-gray-800 dark:text-white" id="modal-security-title">การตั้งค่าความปลอดภัย (ไม่บังคับ)</h4>
+                    <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-3" id="modal-security-desc">ตั้งค่า PIN 4 หลักเพื่อป้องกันผู้อื่นเข้าใช้งานและป้องกันการลบ</p>
+                    <div class="flex items-center justify-center md:justify-start space-x-4">
                         <input type="password" id="setup-pin" maxlength="4" pattern="[0-9]*" inputmode="numeric" placeholder="____" class="w-32 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 pin-input">
                     </div>
                 </div>
 
-                <div class="pt-4 flex justify-end space-x-3">
-                    <button type="button" onclick="closeProfileModal()" class="px-5 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors" id="btn-profile-cancel">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg shadow transition-colors" id="btn-profile-save">บันทึก</button>
+                <div class="pt-4 flex justify-end space-x-3 w-full">
+                    <button type="button" onclick="closeProfileModal()" class="flex-1 md:flex-none px-5 py-2.5 text-sm md:text-base text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors" id="btn-profile-cancel">ยกเลิก</button>
+                    <button type="submit" class="flex-1 md:flex-none px-5 py-2.5 text-sm md:text-base bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg shadow transition-colors" id="btn-profile-save">บันทึก</button>
                 </div>
             </form>
         </div>
@@ -152,22 +165,48 @@
 
     <!-- Modal: PIN Entry -->
     <div id="pin-modal" class="fixed inset-0 bg-black/80 z-[80] hidden flex flex-col items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm relative">
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2" id="pin-modal-title">ป้อน PIN</h3>
-            <p id="pin-profile-name" class="text-gray-500 dark:text-gray-400 mb-6 font-medium">เข้าสู่ระบบ: [ชื่อ]</p>
+        <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm relative">
+            <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-2" id="pin-modal-title">ป้อน PIN</h3>
+            <p id="pin-profile-name" class="text-sm md:text-base text-gray-500 dark:text-gray-400 mb-6 font-medium">เข้าสู่ระบบ: [ชื่อ]</p>
             
             <form id="pin-form" onsubmit="verifyPin(event)">
                 <input type="hidden" id="pin-target-uid">
                 <input type="hidden" id="pin-action" value="login">
-                <input type="password" id="pin-entry" required maxlength="4" pattern="[0-9]*" inputmode="numeric" class="w-48 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white px-4 py-3 outline-none focus:border-indigo-500 dark:focus:border-indigo-500 pin-input mb-4 text-center mx-auto block" autofocus>
+                <input type="password" id="pin-entry" required maxlength="4" pattern="[0-9]*" inputmode="numeric" class="w-40 md:w-48 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white px-4 py-3 outline-none focus:border-indigo-500 dark:focus:border-indigo-500 pin-input mb-4 text-center mx-auto block text-xl" autofocus>
                 
-                <p id="pin-error" class="text-red-500 text-sm h-6 mb-4 opacity-0 transition-opacity">PIN ไม่ถูกต้อง กรุณาลองใหม่</p>
+                <p id="pin-error" class="text-red-500 text-xs md:text-sm h-6 mb-4 opacity-0 transition-opacity">PIN ไม่ถูกต้อง กรุณาลองใหม่</p>
                 
-                <div class="flex justify-center space-x-3">
-                    <button type="button" onclick="closePinModal()" class="px-5 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-pin-cancel">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg" id="btn-pin-submit">ตกลง</button>
+                <div class="flex justify-center space-x-3 w-full">
+                    <button type="button" onclick="closePinModal()" class="flex-1 md:flex-none px-5 py-2 text-sm md:text-base text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-pin-cancel">ยกเลิก</button>
+                    <button type="submit" class="flex-1 md:flex-none px-5 py-2 text-sm md:text-base bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg" id="btn-pin-submit">ตกลง</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal: Text Confirmation Delete -->
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex flex-col items-center justify-center p-4 backdrop-blur-md overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-sm my-auto border border-red-100 dark:border-red-900/30">
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-3 text-red-500">
+                    <i class="fas fa-exclamation-triangle text-2xl"></i>
+                </div>
+                <h3 class="text-lg md:text-xl font-bold text-red-600 dark:text-red-500" id="delete-confirm-title">ยืนยันการลบโปรไฟล์</h3>
+            </div>
+            
+            <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 mb-4 text-center" id="delete-confirm-desc">คุณกำลังจะลบโปรไฟล์ <span id="delete-target-name" class="font-bold text-gray-800 dark:text-white"></span> การกระทำนี้ไม่สามารถย้อนกลับได้ <br><span class="text-red-500 font-semibold mt-1 block" id="delete-confirm-warn">ข้อมูลการประเมินจะถูกลบไปด้วย</span></p>
+            
+            <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                <label class="block text-[11px] md:text-xs font-medium mb-2 text-gray-700 dark:text-gray-300 text-center" id="delete-confirm-label">พิมพ์คำว่า <span class="font-bold text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-900/20 px-1 py-0.5 rounded">มกุล9ยืนยันที่จะลบ</span> เพื่อยืนยัน</label>
+                <input type="text" id="delete-confirm-input" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-3 py-2 rounded-lg text-center outline-none focus:ring-2 focus:ring-red-500 text-sm" oninput="checkDeleteConfirmText()" autocomplete="off">
+            </div>
+            
+            <input type="hidden" id="delete-target-uid-text">
+            
+            <div class="mt-6 flex justify-between space-x-3 w-full">
+                <button onclick="closeDeleteConfirmModal()" class="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors" id="btn-text-del-cancel">ยกเลิก</button>
+                <button id="btn-confirm-delete" onclick="executeProfileDeleteText()" class="flex-1 px-4 py-2.5 text-sm font-medium bg-red-600 text-white rounded-lg opacity-50 cursor-not-allowed transition-all" disabled id="btn-text-del-submit">ลบโปรไฟล์</button>
+            </div>
         </div>
     </div>
 
@@ -176,7 +215,7 @@
     <aside class="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col hidden md:flex z-20 shadow-sm shrink-0 transition-colors">
         <div class="p-5 flex flex-col space-y-3 border-b border-gray-100 dark:border-gray-800">
             <div class="flex items-center space-x-3">
-                <img src="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-" alt="CLU9TER Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm bg-white">
+                <img src="https://lh3.googleusercontent.com/d/11cZ6UY46IS9zCB_3K6lcIs_nD0dJwUyj" alt="CLU9TER Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm bg-white">
                 <h1 class="text-xl font-bold tracking-wider text-gray-800 dark:text-white">CLU9TER</h1>
             </div>
             <!-- Sync Status Sidebar -->
@@ -185,13 +224,13 @@
             </div>
         </div>
         
-        <div class="p-4 flex items-center space-x-3 bg-gray-50 dark:bg-gray-800/50 my-4 mx-4 rounded-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-100 dark:border-gray-700" onclick="handleLogout()" title="คลิกเพื่อเปลี่ยนโปรไฟล์">
-            <img id="current-user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=wait" class="w-10 h-10 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover">
+        <div id="sidebar-profile-card" class="p-4 flex items-center space-x-3 bg-gray-50 dark:bg-gray-800/50 my-4 mx-4 rounded-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-100 dark:border-gray-700" onclick="openEditProfileModal()" title="แก้ไขโปรไฟล์">
+            <img id="current-user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=wait" class="w-10 h-10 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shrink-0">
             <div class="overflow-hidden flex-1">
                 <p class="text-[10px] text-gray-500 dark:text-gray-400" id="current-user-role">กำลังใช้งาน</p>
                 <p id="current-user-name" class="text-sm font-semibold truncate w-full text-gray-800 dark:text-white">Loading...</p>
             </div>
-            <i class="fas fa-exchange-alt text-gray-400 ml-auto text-xs"></i>
+            <i class="fas fa-user-edit text-gray-400 ml-auto text-xs shrink-0"></i>
         </div>
 
         <nav class="flex-1 px-4 space-y-2">
@@ -217,109 +256,116 @@
     </aside>
 
     <!-- Mobile Nav -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around p-2 z-50 transition-colors">
-        <button onclick="switchTab('board')" id="nav-board-mob" class="flex flex-col items-center p-2 text-indigo-600 dark:text-indigo-400 w-1/4"><i class="fas fa-tasks text-lg"></i><span class="text-[9px] mt-1" id="nav-board-mob-text">Board</span></button>
-        <button onclick="switchTab('dashboard')" id="nav-dashboard-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-chart-pie text-lg"></i><span class="text-[9px] mt-1" id="nav-dash-mob-text">Dash</span></button>
-        <button onclick="switchTab('review')" id="nav-review-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-star text-lg"></i><span class="text-[9px] mt-1" id="nav-review-mob-text">Review</span></button>
-        <button onclick="switchTab('logs')" id="nav-logs-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-history text-lg"></i><span class="text-[9px] mt-1" id="nav-logs-mob-text">Logs</span></button>
+    <nav class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around p-1 pb-safe z-50 transition-colors shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <button onclick="switchTab('board')" id="nav-board-mob" class="flex flex-col items-center p-2 text-indigo-600 dark:text-indigo-400 w-1/4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-tasks text-lg md:text-xl"></i><span class="text-[9px] mt-1 font-medium" id="nav-board-mob-text">Board</span></button>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-chart-pie text-lg md:text-xl"></i><span class="text-[9px] mt-1 font-medium" id="nav-dash-mob-text">Dash</span></button>
+        <button onclick="switchTab('review')" id="nav-review-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-star text-lg md:text-xl"></i><span class="text-[9px] mt-1 font-medium" id="nav-review-mob-text">Review</span></button>
+        <button onclick="switchTab('logs')" id="nav-logs-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-history text-lg md:text-xl"></i><span class="text-[9px] mt-1 font-medium" id="nav-logs-mob-text">Logs</span></button>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-full bg-gray-50 dark:bg-gray-900 pb-16 md:pb-0 relative transition-colors">
-        <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center z-10 transition-colors">
-            <div class="flex flex-col">
-                <h2 id="page-title" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">กระดานงานของทีม</h2>
+    <main class="flex-1 flex flex-col h-full bg-gray-50 dark:bg-gray-900 pb-20 md:pb-0 relative transition-colors">
+        <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-3 md:py-4 flex justify-between items-center z-10 transition-colors shrink-0">
+            <div class="flex flex-col max-w-[50%] md:max-w-full">
+                <h2 id="page-title" class="text-lg md:text-2xl font-bold text-gray-800 dark:text-white truncate">กระดานงานของทีม</h2>
                 <!-- Sync Status Mobile Only -->
-                <div class="sync-status-indicator md:hidden flex items-center space-x-1.5 text-[10px] font-medium mt-1">
-                     <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1" id="sync-text-mob">ตรวจสอบสถานะ...</span>
+                <div class="sync-status-indicator md:hidden flex items-center space-x-1.5 text-[9px] font-medium mt-0.5">
+                     <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1 truncate" id="sync-text-mob">ตรวจสอบสถานะ...</span>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 md:space-x-3 shrink-0">
+                <!-- Active Users List -->
+                <div id="active-users-list" class="flex items-center transition-all"></div>
+                
                 <!-- Language Toggle App -->
-                <button onclick="toggleLanguage()" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-semibold text-xs">
+                <button onclick="toggleLanguage()" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-semibold text-xs shrink-0">
                     <span id="lang-toggle-app">EN</span>
                 </button>
                 <!-- Theme Toggle App -->
-                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-moon dark:hidden"></i>
-                    <i class="fas fa-sun hidden dark:block"></i>
+                <button onclick="toggleTheme()" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shrink-0">
+                    <i class="fas fa-moon dark:hidden text-xs md:text-sm"></i>
+                    <i class="fas fa-sun hidden dark:block text-xs md:text-sm"></i>
                 </button>
-                <button id="btn-add-task" onclick="openAddTaskModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm font-medium">
+                <button id="btn-add-task" onclick="openAddTaskModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg shadow-sm transition-all flex items-center space-x-1.5 md:space-x-2 text-xs md:text-sm font-medium shrink-0">
                     <i class="fas fa-plus"></i> <span class="hidden md:inline" id="header-add-task-text">เพิ่มงานใหม่</span>
                 </button>
-                <button onclick="handleLogout()" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-indigo-600 w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <i class="fas fa-exchange-alt"></i>
+                <button id="btn-header-edit" onclick="openEditProfileModal()" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-indigo-600 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
+                    <i class="fas fa-user-edit text-xs"></i>
+                </button>
+                <button onclick="handleLogout()" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-indigo-600 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
+                    <i class="fas fa-exchange-alt text-xs"></i>
                 </button>
             </div>
         </header>
 
         <div id="loading-spinner" class="absolute inset-0 bg-white/80 dark:bg-gray-900/80 z-40 flex flex-col items-center justify-center hidden backdrop-blur-sm">
-            <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-600 dark:text-indigo-400 mb-4"></i>
-            <p class="text-indigo-800 dark:text-indigo-300 font-medium" id="loading-text">กำลังโหลดข้อมูล...</p>
+            <i class="fas fa-circle-notch fa-spin text-3xl md:text-4xl text-indigo-600 dark:text-indigo-400 mb-4"></i>
+            <p class="text-sm md:text-base text-indigo-800 dark:text-indigo-300 font-medium" id="loading-text">กำลังโหลดข้อมูล...</p>
         </div>
 
         <!-- View: Board -->
-        <div id="view-board" class="flex-1 overflow-x-auto overflow-y-auto p-4 md:p-6 hidden">
-            <div class="flex flex-col md:flex-row gap-4 md:gap-6 min-w-max md:min-w-0 h-full">
+        <div id="view-board" class="flex-1 overflow-x-auto overflow-y-hidden p-4 md:p-6 hidden">
+            <!-- Added snap-container for better mobile scrolling -->
+            <div class="flex flex-row gap-4 md:gap-6 min-w-max md:min-w-0 h-full pb-4 snap-container overflow-x-auto md:overflow-x-visible">
                 <!-- To Do -->
-                <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-gray-200 dark:border-gray-700 h-max max-h-full">
-                    <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center rounded-t-xl bg-gray-200/50 dark:bg-gray-800">
-                        <h3 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span> <span id="col-todo-title">รอดำเนินการ</span></h3>
+                <div class="snap-item bg-gray-100 dark:bg-gray-800/50 rounded-xl w-72 md:w-1/3 flex flex-col shadow-sm border border-gray-200 dark:border-gray-700 h-max max-h-full shrink-0 md:shrink">
+                    <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center rounded-t-xl bg-gray-200/50 dark:bg-gray-800 shrink-0">
+                        <h3 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center text-sm md:text-base"><span class="w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span> <span id="col-todo-title">รอดำเนินการ</span></h3>
                         <span id="count-todo" class="bg-white dark:bg-gray-700 text-xs font-bold px-2 py-0.5 rounded-md text-gray-600 dark:text-gray-300 shadow-sm border border-gray-200 dark:border-gray-600">0</span>
                     </div>
-                    <div id="col-todo" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                    <div id="col-todo" class="p-2 md:p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
                 </div>
                 <!-- Doing -->
-                <div class="bg-blue-50 dark:bg-blue-900/10 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-blue-100 dark:border-blue-800/50 h-max max-h-full">
-                    <div class="p-3 border-b border-blue-100 dark:border-blue-800/50 flex justify-between items-center rounded-t-xl bg-blue-100/50 dark:bg-blue-900/20">
-                        <h3 class="font-semibold text-blue-800 dark:text-blue-300 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2"></span> <span id="col-doing-title">กำลังทำ</span></h3>
+                <div class="snap-item bg-blue-50 dark:bg-blue-900/10 rounded-xl w-72 md:w-1/3 flex flex-col shadow-sm border border-blue-100 dark:border-blue-800/50 h-max max-h-full shrink-0 md:shrink">
+                    <div class="p-3 border-b border-blue-100 dark:border-blue-800/50 flex justify-between items-center rounded-t-xl bg-blue-100/50 dark:bg-blue-900/20 shrink-0">
+                        <h3 class="font-semibold text-blue-800 dark:text-blue-300 flex items-center text-sm md:text-base"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2"></span> <span id="col-doing-title">กำลังทำ</span></h3>
                         <span id="count-doing" class="bg-white dark:bg-blue-900/50 text-xs font-bold px-2 py-0.5 rounded-md text-blue-600 dark:text-blue-300 shadow-sm border border-blue-100 dark:border-blue-700">0</span>
                     </div>
-                    <div id="col-doing" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                    <div id="col-doing" class="p-2 md:p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
                 </div>
                 <!-- Done -->
-                <div class="bg-green-50 dark:bg-green-900/10 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-green-100 dark:border-green-800/50 h-max max-h-full">
-                    <div class="p-3 border-b border-green-100 dark:border-green-800/50 flex justify-between items-center rounded-t-xl bg-green-100/50 dark:bg-green-900/20">
-                        <h3 class="font-semibold text-green-800 dark:text-green-300 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></span> <span id="col-done-title">เสร็จสิ้น</span></h3>
+                <div class="snap-item bg-green-50 dark:bg-green-900/10 rounded-xl w-72 md:w-1/3 flex flex-col shadow-sm border border-green-100 dark:border-green-800/50 h-max max-h-full shrink-0 md:shrink">
+                    <div class="p-3 border-b border-green-100 dark:border-green-800/50 flex justify-between items-center rounded-t-xl bg-green-100/50 dark:bg-green-900/20 shrink-0">
+                        <h3 class="font-semibold text-green-800 dark:text-green-300 flex items-center text-sm md:text-base"><span class="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></span> <span id="col-done-title">เสร็จสิ้น</span></h3>
                         <span id="count-done" class="bg-white dark:bg-green-900/50 text-xs font-bold px-2 py-0.5 rounded-md text-green-600 dark:text-green-300 shadow-sm border border-green-100 dark:border-green-700">0</span>
                     </div>
-                    <div id="col-done" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                    <div id="col-done" class="p-2 md:p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
                 </div>
             </div>
         </div>
 
         <!-- View: Dashboard & Analytics -->
-        <div id="view-dashboard" class="hidden flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        <div id="view-dashboard" class="hidden flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
             <!-- Summary Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-progress">ความคืบหน้า</p>
-                        <i class="fas fa-flag-checkered text-xl md:text-2xl opacity-30"></i>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-[1.02] transition-transform">
+                    <div class="flex items-center justify-between mb-1 md:mb-2">
+                        <p class="text-[10px] md:text-sm font-medium opacity-90" id="dash-title-progress">ความคืบหน้า</p>
+                        <i class="fas fa-flag-checkered text-lg md:text-2xl opacity-30"></i>
                     </div>
-                    <h3 id="dash-progress" class="text-2xl md:text-3xl font-bold">0%</h3>
+                    <h3 id="dash-progress" class="text-xl md:text-3xl font-bold">0%</h3>
                 </div>
-                <div class="bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-700 dark:to-gray-800 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-total">งานทั้งหมด</p>
-                        <i class="fas fa-tasks text-xl md:text-2xl opacity-30"></i>
+                <div class="bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-700 dark:to-gray-800 p-3 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-[1.02] transition-transform">
+                    <div class="flex items-center justify-between mb-1 md:mb-2">
+                        <p class="text-[10px] md:text-sm font-medium opacity-90" id="dash-title-total">งานทั้งหมด</p>
+                        <i class="fas fa-tasks text-lg md:text-2xl opacity-30"></i>
                     </div>
-                    <h3 id="dash-total" class="text-2xl md:text-3xl font-bold">0</h3>
+                    <h3 id="dash-total" class="text-xl md:text-3xl font-bold">0</h3>
                 </div>
-                <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-ontime">ส่งตรงเวลา</p>
-                        <i class="fas fa-check-circle text-xl md:text-2xl opacity-30"></i>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-3 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-[1.02] transition-transform">
+                    <div class="flex items-center justify-between mb-1 md:mb-2">
+                        <p class="text-[10px] md:text-sm font-medium opacity-90" id="dash-title-ontime">ส่งตรงเวลา</p>
+                        <i class="fas fa-check-circle text-lg md:text-2xl opacity-30"></i>
                     </div>
-                    <h3 id="dash-ontime" class="text-2xl md:text-3xl font-bold">0</h3>
+                    <h3 id="dash-ontime" class="text-xl md:text-3xl font-bold">0</h3>
                 </div>
-                <div class="bg-gradient-to-br from-red-500 to-red-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-late">ส่งล่าช้า</p>
-                        <i class="fas fa-exclamation-circle text-xl md:text-2xl opacity-30"></i>
+                <div class="bg-gradient-to-br from-red-500 to-red-600 p-3 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-[1.02] transition-transform">
+                    <div class="flex items-center justify-between mb-1 md:mb-2">
+                        <p class="text-[10px] md:text-sm font-medium opacity-90" id="dash-title-late">ส่งล่าช้า</p>
+                        <i class="fas fa-exclamation-circle text-lg md:text-2xl opacity-30"></i>
                     </div>
-                    <h3 id="dash-late" class="text-2xl md:text-3xl font-bold">0</h3>
+                    <h3 id="dash-late" class="text-xl md:text-3xl font-bold">0</h3>
                 </div>
             </div>
 
@@ -327,25 +373,25 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-100" id="dash-perf-title">คะแนน Performance</h3>
-                        <span class="text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-full">%</span>
+                        <h3 class="font-semibold text-sm md:text-lg text-gray-800 dark:text-gray-100" id="dash-perf-title">คะแนน Performance</h3>
+                        <span class="text-[10px] md:text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-full">%</span>
                     </div>
-                    <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-4 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg border border-gray-100 dark:border-gray-600">
+                    <p class="text-[9px] md:text-xs text-gray-500 dark:text-gray-400 mb-4 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg border border-gray-100 dark:border-gray-600">
                         <i class="fas fa-info-circle mr-1"></i><span id="perf-formula-text">สูตร: ส่งตรงเวลา (40%) + ปริมาณงาน (30%) + ประเมินเพื่อน (30%)</span>
                     </p>
-                    <div class="relative" style="height: 250px;">
+                    <div class="relative" style="height: 200px; md:height: 250px;">
                         <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-100 mb-4" id="dash-status-title">สถานะงานรวม</h3>
-                    <div class="flex items-center justify-center" style="height: 250px;">
-                        <div class="relative w-full max-w-[250px]">
+                    <h3 class="font-semibold text-sm md:text-lg text-gray-800 dark:text-gray-100 mb-4" id="dash-status-title">สถานะงานรวม</h3>
+                    <div class="flex items-center justify-center" style="height: 200px; md:height: 250px;">
+                        <div class="relative w-full max-w-[200px] md:max-w-[250px]">
                             <canvas id="statusChart"></canvas>
                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div class="text-center">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400" id="dash-total-label">งานทั้งหมด</p>
-                                    <p id="total-tasks-center" class="text-2xl font-bold text-gray-800 dark:text-gray-100">0</p>
+                                    <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400" id="dash-total-label">งานทั้งหมด</p>
+                                    <p id="total-tasks-center" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">0</p>
                                 </div>
                             </div>
                         </div>
@@ -355,21 +401,21 @@
 
             <!-- Performance Table -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div class="p-4 md:p-5 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-200 flex items-center">
+                <div class="p-3 md:p-5 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="font-semibold text-sm md:text-lg text-gray-800 dark:text-gray-200 flex items-center">
                         <i class="fas fa-users-cog mr-2 text-indigo-600 dark:text-indigo-400"></i>
                         <span id="dash-indiv-title">ประสิทธิภาพรายบุคคล</span>
                     </h3>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
+                    <table class="w-full text-left text-xs md:text-sm">
                         <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border-b-2 border-gray-200 dark:border-gray-600">
                             <tr>
-                                <th class="py-3 px-4 font-semibold" id="th-member">สมาชิก</th>
-                                <th class="py-3 px-4 text-center font-semibold" id="th-tasks">งานที่ทำ</th>
-                                <th class="py-3 px-4 text-center font-semibold" id="th-ontime">ตรงเวลา/ล่าช้า</th>
-                                <th class="py-3 px-4 text-center font-semibold" id="th-peer">คะแนนจากเพื่อน</th>
-                                <th class="py-3 px-4 text-center font-semibold text-indigo-600 dark:text-indigo-400">
+                                <th class="py-2 md:py-3 px-3 md:px-4 font-semibold whitespace-nowrap" id="th-member">สมาชิก</th>
+                                <th class="py-2 md:py-3 px-3 md:px-4 text-center font-semibold whitespace-nowrap" id="th-tasks">งานที่ทำ</th>
+                                <th class="py-2 md:py-3 px-3 md:px-4 text-center font-semibold whitespace-nowrap" id="th-ontime">ตรงเวลา/ล่าช้า</th>
+                                <th class="py-2 md:py-3 px-3 md:px-4 text-center font-semibold whitespace-nowrap" id="th-peer">คะแนนเพื่อน</th>
+                                <th class="py-2 md:py-3 px-3 md:px-4 text-center font-semibold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
                                     <i class="fas fa-trophy mr-1"></i>Score
                                 </th>
                             </tr>
@@ -383,61 +429,72 @@
         <!-- View: Peer Review -->
         <div id="view-review" class="hidden flex-1 overflow-y-auto p-4 md:p-6">
             <div class="max-w-4xl mx-auto">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 text-center">
-                    <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-3"><i class="fas fa-star-half-alt"></i></div>
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100" id="review-header-title">ประเมินเพื่อนแบบไม่ระบุตัวตน</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2" id="review-header-desc">ให้ดาวเพื่อนร่วมทีมตามความเป็นจริง ข้อมูลนี้ถูกเก็บเป็นความลับ</p>
+                <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 text-center">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-500 rounded-full flex items-center justify-center text-2xl md:text-3xl mx-auto mb-2 md:mb-3"><i class="fas fa-star-half-alt"></i></div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100" id="review-header-title">ประเมินเพื่อนแบบไม่ระบุตัวตน</h3>
+                    <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1 md:mt-2" id="review-header-desc">ให้ดาวเพื่อนร่วมทีมตามความเป็นจริง ข้อมูลนี้ถูกเก็บเป็นความลับ</p>
                 </div>
-                <div id="peer-review-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div id="peer-review-list" class="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4"></div>
             </div>
         </div>
 
         <!-- View: Logs -->
         <div id="view-logs" class="hidden flex-1 overflow-y-auto p-4 md:p-6">
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 max-w-4xl mx-auto overflow-hidden">
-                <div class="p-4 bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200" id="logs-header-title">ประวัติการเคลื่อนไหวล่าสุด</div>
+                <div class="p-3 md:p-4 bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 font-semibold text-sm md:text-base text-gray-700 dark:text-gray-200" id="logs-header-title">ประวัติการเคลื่อนไหวล่าสุด</div>
                 <div class="p-0"><ul id="log-list" class="divide-y divide-gray-100 dark:divide-gray-700"></ul></div>
             </div>
         </div>
     </main>
 
-    <!-- Modal: Add Task (Higher z-index to avoid mobile nav overlap) -->
+    <!-- Modal: Add/Edit Task -->
     <div id="task-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
-            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/80">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white" id="modal-task-title">สร้างงานใหม่</h3>
-                <button type="button" onclick="closeModal('task-modal')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            <div class="p-4 md:p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/80">
+                <h3 class="text-base md:text-lg font-bold text-gray-800 dark:text-white" id="modal-task-title">สร้างงานใหม่</h3>
+                <button type="button" onclick="closeModal('task-modal')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-lg md:text-xl"></i></button>
             </div>
-            <form id="task-form" class="p-6 space-y-4">
+            <form id="task-form" onsubmit="submitTask(event)" class="p-4 md:p-6 space-y-3 md:space-y-4">
+                <input type="hidden" id="task-id" value="">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-title">ชื่องาน</span> *</label>
-                    <input type="text" id="task-title" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-title">ชื่องาน</span> *</label>
+                    <input type="text" id="task-title" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-desc">รายละเอียดงาน</label>
-                    <textarea id="task-desc" rows="2" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-desc">รายละเอียดงาน</label>
+                    <textarea id="task-desc" rows="2" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                
+                <div>
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-category">หมวดหมู่ / โปรเจค</label>
+                    <input type="text" id="task-category" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="เช่น โปรเจค A, บทที่ 1">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-assignee">ผู้รับผิดชอบ</label>
-                        <select id="task-assignee" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-assignee">ผู้รับผิดชอบ</label>
+                        <select id="task-assignee" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                             <option value="">-- ไม่ระบุ --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-weight">น้ำหนัก (Weight)</label>
-                        <select id="task-difficulty" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-weight">น้ำหนัก (Weight)</label>
+                        <select id="task-difficulty" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                             <option value="1">ง่าย (1 pts)</option><option value="2">ปานกลาง (2 pts)</option><option value="3" selected>ยาก (3 pts)</option><option value="4">ยากมาก (4 pts)</option><option value="5">เดอะแบก (5 pts)</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-duedate">กำหนดส่ง</span> *</label>
-                    <input type="datetime-local" id="task-duedate" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-duedate">กำหนดส่ง</span> *</label>
+                    <input type="datetime-local" id="task-duedate" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
-                <div class="pt-4 flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal('task-modal')" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-task-cancel">ยกเลิก</button>
-                    <button type="submit" class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md font-medium" id="btn-task-save">บันทึก</button>
+                <div class="pt-3 md:pt-4 flex flex-wrap-reverse md:flex-nowrap justify-between gap-3">
+                    <button type="button" onclick="deleteTaskAction()" class="w-full md:w-auto px-4 py-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg hidden font-medium" id="btn-task-delete">ลบงาน</button>
+                    
+                    <div class="flex space-x-3 w-full md:w-auto justify-end">
+                        <button type="button" onclick="closeModal('task-modal')" class="flex-1 md:flex-none px-4 py-2 text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-task-cancel">ยกเลิก</button>
+                        <button type="submit" class="flex-1 md:flex-none px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md font-medium" id="btn-task-save">บันทึก</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -446,22 +503,22 @@
     <!-- Modal: Done Report (ส่งงาน) -->
     <div id="done-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
-            <div class="p-5 border-b border-green-100 dark:border-green-900/30 flex justify-between items-center bg-green-50 dark:bg-green-900/20">
-                <h3 class="text-lg font-bold text-green-800 dark:text-green-400" id="modal-done-title"><i class="fas fa-check-circle mr-2"></i>รายงานการส่งงาน</h3>
-                <button type="button" onclick="cancelDoneAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            <div class="p-4 md:p-5 border-b border-green-100 dark:border-green-900/30 flex justify-between items-center bg-green-50 dark:bg-green-900/20">
+                <h3 class="text-base md:text-lg font-bold text-green-800 dark:text-green-400" id="modal-done-title"><i class="fas fa-check-circle mr-2"></i>รายงานการส่งงาน</h3>
+                <button type="button" onclick="cancelDoneAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-lg md:text-xl"></i></button>
             </div>
-            <form id="done-form" onsubmit="submitDoneReport(event)" class="p-6 space-y-4">
+            <form id="done-form" onsubmit="submitDoneReport(event)" class="p-4 md:p-6 space-y-4">
                 <input type="hidden" id="done-task-id">
                 <input type="hidden" id="done-task-title">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" id="label-done-report">สิ่งที่ทำมาแล้ว / ผลลัพธ์ของงาน (บังคับ) *</label>
-                    <textarea id="done-report" required rows="4" placeholder="อธิบายว่าคุณได้ทำอะไรไปบ้างในงานชิ้นนี้..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" id="label-done-report">สิ่งที่ทำมาแล้ว / ผลลัพธ์ของงาน (บังคับ) *</label>
+                    <textarea id="done-report" required rows="4" placeholder="อธิบายว่าคุณได้ทำอะไรไปบ้างในงานชิ้นนี้..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none"></textarea>
                 </div>
                 
-                <div class="pt-2 flex justify-end space-x-3">
-                    <button type="button" onclick="cancelDoneAction()" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-done-cancel">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-md font-medium" id="btn-done-submit">ยืนยันการส่งงาน</button>
+                <div class="pt-2 flex justify-end space-x-3 w-full">
+                    <button type="button" onclick="cancelDoneAction()" class="flex-1 md:flex-none px-4 py-2 text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-done-cancel">ยกเลิก</button>
+                    <button type="submit" class="flex-1 md:flex-none px-4 py-2 text-sm text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-md font-medium" id="btn-done-submit">ยืนยันการส่งงาน</button>
                 </div>
             </form>
         </div>
@@ -470,32 +527,32 @@
     <!-- Modal: Extension Request (ขอเลื่อนส่ง) -->
     <div id="extend-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
-            <div class="p-5 border-b border-amber-100 dark:border-amber-900/30 flex justify-between items-center bg-amber-50 dark:bg-amber-900/20">
-                <h3 class="text-lg font-bold text-amber-800 dark:text-amber-500" id="modal-extend-title"><i class="fas fa-calendar-plus mr-2"></i>ขอขยายเวลาการทำงาน</h3>
-                <button type="button" onclick="cancelExtendAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            <div class="p-4 md:p-5 border-b border-amber-100 dark:border-amber-900/30 flex justify-between items-center bg-amber-50 dark:bg-amber-900/20">
+                <h3 class="text-base md:text-lg font-bold text-amber-800 dark:text-amber-500" id="modal-extend-title"><i class="fas fa-calendar-plus mr-2"></i>ขอขยายเวลาการทำงาน</h3>
+                <button type="button" onclick="cancelExtendAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-lg md:text-xl"></i></button>
             </div>
-            <form id="extend-form" onsubmit="submitExtensionRequest(event)" class="p-6 space-y-4">
+            <form id="extend-form" onsubmit="submitExtensionRequest(event)" class="p-4 md:p-6 space-y-3 md:space-y-4">
                 <input type="hidden" id="extend-task-id">
                 <input type="hidden" id="extend-task-title">
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-date">กำหนดส่งใหม่ที่ต้องการ *</label>
-                    <input type="datetime-local" id="extend-new-date" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-date">กำหนดส่งใหม่ที่ต้องการ *</label>
+                    <input type="datetime-local" id="extend-new-date" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-reason">เหตุผลที่ขอเลื่อน *</label>
-                    <textarea id="extend-reason" required rows="2" placeholder="ทำไมถึงทำไม่ทัน..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-reason">เหตุผลที่ขอเลื่อน *</label>
+                    <textarea id="extend-reason" required rows="2" placeholder="ทำไมถึงทำไม่ทัน..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-progress">ความคืบหน้าปัจจุบัน (ทำอะไรไปแล้วบ้าง) *</label>
-                    <textarea id="extend-progress" required rows="2" placeholder="อธิบายงานที่ทำไปแล้ว..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+                    <label class="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-progress">ความคืบหน้าปัจจุบัน (ทำอะไรไปแล้วบ้าง) *</label>
+                    <textarea id="extend-progress" required rows="2" placeholder="อธิบายงานที่ทำไปแล้ว..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
                 </div>
                 
-                <div class="pt-2 flex justify-end space-x-3">
-                    <button type="button" onclick="cancelExtendAction()" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-extend-cancel">ยกเลิก</button>
-                    <button type="submit" class="px-5 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-lg shadow-md font-medium" id="btn-extend-submit">บันทึกการขอเลื่อน</button>
+                <div class="pt-2 flex justify-end space-x-3 w-full">
+                    <button type="button" onclick="cancelExtendAction()" class="flex-1 md:flex-none px-4 py-2 text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-extend-cancel">ยกเลิก</button>
+                    <button type="submit" class="flex-1 md:flex-none px-4 py-2 text-sm text-white bg-amber-500 hover:bg-amber-600 rounded-lg shadow-md font-medium" id="btn-extend-submit">บันทึกการขอเลื่อน</button>
                 </div>
             </form>
         </div>
@@ -518,6 +575,7 @@
         let charts = {};
         let isManageMode = false;
         let currentLang = 'th'; // Default language
+        let presenceInterval = null;
         
         // Translation Dictionary
         const translations = {
@@ -561,6 +619,7 @@
                 'header.review': 'ประเมินเพื่อนร่วมทีม',
                 'header.logs': 'บันทึกความเคลื่อนไหว',
                 'header.addTask': 'เพิ่มงานใหม่',
+                'header.online': 'กำลังออนไลน์',
                 
                 // Dashboard
                 'dash.progress': 'ความคืบหน้า',
@@ -592,13 +651,18 @@
                 'board.late': 'ล่าช้า',
                 'board.result': 'ผลลัพธ์',
                 'board.extended': 'เลื่อนส่ง',
+                'board.general': 'ทั่วไป',
                 
                 // Task Modal
                 'task.create': 'สร้างงานใหม่',
+                'task.edit': 'แก้ไขงาน',
                 'task.title': 'ชื่องาน',
                 'task.desc': 'รายละเอียดงาน',
+                'task.category': 'หมวดหมู่ / โปรเจค',
+                'task.categoryPlaceholder': 'เช่น โปรเจค A, บทที่ 1',
                 'task.assignee': 'ผู้รับผิดชอบ',
                 'task.none': '-- ไม่ระบุ --',
+                'task.everyone': 'ทุกคน (Everyone)',
                 'task.weight': 'น้ำหนัก (Weight)',
                 'task.easy': 'ง่าย (1 pts)',
                 'task.medium': 'ปานกลาง (2 pts)',
@@ -607,6 +671,9 @@
                 'task.extreme': 'เดอะแบก (5 pts)',
                 'task.duedate': 'กำหนดส่ง',
                 'task.me': '(ฉัน)',
+                'task.update': 'อัปเดตงาน',
+                'task.delete': 'ลบงาน',
+                'confirm.deleteTask': 'คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?',
                 
                 // Done Modal
                 'done.title': 'รายงานการส่งงาน',
@@ -649,19 +716,30 @@
                 'toast.guestNoRate': 'โหมดผู้เยี่ยมชมไม่สามารถให้คะแนนได้',
                 'toast.guestMode': 'เข้าสู่โหมดผู้เยี่ยมชม (ดูข้อมูลอย่างเดียว)',
                 'toast.taskAdded': 'เพิ่มงานสำเร็จ',
+                'toast.taskUpdated': 'อัปเดตงานสำเร็จ',
+                'toast.taskDeleted': 'ลบงานสำเร็จ',
                 'toast.statusUpdated': 'อัปเดตสถานะสำเร็จ',
                 'toast.rated': 'ให้ {stars} ดาว เรียบร้อยแล้ว',
                 'toast.loading': 'กำลังโหลดข้อมูล...',
                 'toast.profileCreated': 'สร้างโปรไฟล์สำเร็จ',
-                'toast.profileDeleted': 'ลบโปรไฟล์สำเร็จ',
+                'toast.profileDeleted': 'ลบโปรไฟล์และข้อมูลที่เกี่ยวข้องสำเร็จ',
                 'toast.profileError': 'เกิดข้อผิดพลาดในการสร้างโปรไฟล์',
-                'toast.deleteError': 'ลบโปรไฟล์ล้มเหลว',
+                'toast.deleteError': 'ล้มเหลว',
                 'toast.saveError': 'ไม่สามารถบันทึกได้',
                 'toast.updateError': 'ไม่สามารถอัปเดตได้',
                 'toast.ratingError': 'เกิดข้อผิดพลาดในการให้คะแนน',
                 'toast.doneSuccess': 'บันทึกการส่งงานสำเร็จ',
                 'toast.extendSuccess': 'บันทึกการขอเลื่อนเวลาสำเร็จ',
-                'confirm.deleteProfile': 'คุณแน่ใจหรือไม่ว่าต้องการลบโปรไฟล์ "{name}"?\n(การกระทำนี้ไม่สามารถกู้คืนได้)',
+                
+                // Edit & Delete Profile
+                'profile.edit': 'แก้ไขโปรไฟล์',
+                'profile.update': 'อัปเดต',
+                'profile.editTitle': 'คลิกเพื่อแก้ไขโปรไฟล์',
+                'toast.profileUpdated': 'อัปเดตโปรไฟล์สำเร็จ',
+                'toast.profileUpdateError': 'เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์',
+                'delete.title': 'ยืนยันการลบโปรไฟล์',
+                'delete.warning': 'คุณกำลังจะลบโปรไฟล์ การกระทำนี้ไม่สามารถย้อนกลับได้ ข้อมูลการประเมินจะถูกลบไปด้วย',
+                'delete.instruction': 'พิมพ์คำว่า <span class="font-bold text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-900/20 px-1 py-0.5 rounded">มกุล9ยืนยันที่จะลบ</span> เพื่อยืนยัน',
             },
             en: {
                 'doc.title': 'CLU9TER - Team Task Management',
@@ -703,6 +781,7 @@
                 'header.review': 'Peer Review',
                 'header.logs': 'Activity History',
                 'header.addTask': 'Add New Task',
+                'header.online': 'Online',
                 
                 // Dashboard
                 'dash.progress': 'Progress',
@@ -734,13 +813,18 @@
                 'board.late': 'Late',
                 'board.result': 'Result',
                 'board.extended': 'Extended',
+                'board.general': 'General',
                 
                 // Task Modal
                 'task.create': 'Create New Task',
+                'task.edit': 'Edit Task',
                 'task.title': 'Task Title',
                 'task.desc': 'Task Description',
+                'task.category': 'Category / Project',
+                'task.categoryPlaceholder': 'e.g., Project A, Chapter 1',
                 'task.assignee': 'Assignee',
                 'task.none': '-- None --',
+                'task.everyone': 'Everyone',
                 'task.weight': 'Weight',
                 'task.easy': 'Easy (1 pts)',
                 'task.medium': 'Medium (2 pts)',
@@ -749,6 +833,9 @@
                 'task.extreme': 'Extreme (5 pts)',
                 'task.duedate': 'Due Date',
                 'task.me': '(Me)',
+                'task.update': 'Update Task',
+                'task.delete': 'Delete Task',
+                'confirm.deleteTask': 'Are you sure you want to delete this task?',
                 
                 // Done Modal
                 'done.title': 'Work Submission Report',
@@ -791,19 +878,30 @@
                 'toast.guestNoRate': 'Guest mode cannot rate peers',
                 'toast.guestMode': 'Entered guest mode (view only)',
                 'toast.taskAdded': 'Task added successfully',
+                'toast.taskUpdated': 'Task updated successfully',
+                'toast.taskDeleted': 'Task deleted successfully',
                 'toast.statusUpdated': 'Status updated successfully',
                 'toast.rated': 'Rated {stars} stars successfully',
                 'toast.loading': 'Loading data...',
                 'toast.profileCreated': 'Profile created successfully',
-                'toast.profileDeleted': 'Profile deleted successfully',
+                'toast.profileDeleted': 'Profile and associated data deleted successfully',
                 'toast.profileError': 'Failed to create profile',
-                'toast.deleteError': 'Failed to delete profile',
+                'toast.deleteError': 'Failed',
                 'toast.saveError': 'Failed to save',
                 'toast.updateError': 'Failed to update',
                 'toast.ratingError': 'Failed to rate',
                 'toast.doneSuccess': 'Work submission saved successfully',
                 'toast.extendSuccess': 'Extension request saved successfully',
-                'confirm.deleteProfile': 'Are you sure you want to delete profile "{name}"?\n(This action cannot be undone)',
+                
+                // Edit & Delete Profile
+                'profile.edit': 'Edit Profile',
+                'profile.update': 'Update',
+                'profile.editTitle': 'Click to edit profile',
+                'toast.profileUpdated': 'Profile updated successfully',
+                'toast.profileUpdateError': 'Failed to update profile',
+                'delete.title': 'Confirm Profile Deletion',
+                'delete.warning': 'You are about to delete profile. This cannot be undone. All associated peer reviews will be deleted.',
+                'delete.instruction': 'Type <span class="font-bold text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-900/20 px-1 py-0.5 rounded">มกุล9ยืนยันที่จะลบ</span> to confirm',
             }
         };
         
@@ -893,6 +991,10 @@
 
             // Logs Header
             safeSetText('logs-header-title', 'logs.title');
+            
+            // Profile Card Title
+            const sidebarCard = document.getElementById('sidebar-profile-card');
+            if(sidebarCard) sidebarCard.title = t('profile.editTitle');
 
             // Update page title based on current tab
             const currentTab = document.querySelector('[id^="view-"]:not(.hidden)')?.id.replace('view-', '');
@@ -914,41 +1016,55 @@
                 roleEl.innerHTML = `<i class="fas fa-eye text-amber-500 mr-1"></i>${t('nav.guestMode')}`;
             }
             
+            renderActiveUsers(); // Re-render presence labels
+            
             // Update modals
             updateModalLanguage();
         }
         
         function updateModalLanguage() {
             // Profile Modal
-            safeSetText('modal-add-profile-title', 'profile.add');
+            const mode = document.getElementById('setup-mode')?.value || 'create';
+            if (mode === 'edit') {
+                safeSetText('modal-add-profile-title', 'profile.edit');
+                const profileSubmitBtn = document.getElementById('btn-profile-save');
+                if(profileSubmitBtn && !profileSubmitBtn.disabled) profileSubmitBtn.textContent = t('profile.update');
+            } else {
+                safeSetText('modal-add-profile-title', 'profile.add');
+                const profileSubmitBtn = document.getElementById('btn-profile-save');
+                if(profileSubmitBtn && !profileSubmitBtn.disabled) profileSubmitBtn.textContent = t('profile.save');
+            }
+            
             safeSetText('text-random-avatar', 'profile.clickRandom');
             safeSetText('text-profile-upload', 'profile.upload');
             safeSetText('modal-security-title', 'profile.security');
             safeSetText('modal-security-desc', 'profile.securityDesc');
             safeSetText('btn-profile-cancel', 'profile.cancel');
             
-            const profileSubmitBtn = document.getElementById('btn-profile-save');
-            if(profileSubmitBtn && !profileSubmitBtn.disabled) profileSubmitBtn.textContent = t('profile.save');
-            
             const setupName = document.getElementById('setup-name');
             if(setupName) setupName.placeholder = t('profile.name');
             
             // Task Modal
-            safeSetText('modal-task-title', 'task.create');
+            const taskId = document.getElementById('task-id')?.value;
+            safeSetText('modal-task-title', taskId ? 'task.edit' : 'task.create');
             safeSetText('label-task-title', 'task.title');
             safeSetText('label-task-desc', 'task.desc');
+            safeSetText('label-task-category', 'task.category');
             safeSetText('label-task-assignee', 'task.assignee');
             safeSetText('label-task-weight', 'task.weight');
             safeSetText('label-task-duedate', 'task.duedate');
             safeSetText('btn-task-cancel', 'profile.cancel');
+            safeSetText('btn-task-delete', 'task.delete');
 
             const taskTitle = document.getElementById('task-title');
             if(taskTitle) taskTitle.placeholder = t('task.title');
             const taskDesc = document.getElementById('task-desc');
             if(taskDesc) taskDesc.placeholder = t('task.desc');
+            const taskCategory = document.getElementById('task-category');
+            if(taskCategory) taskCategory.placeholder = t('task.categoryPlaceholder');
 
             const taskSubmitBtn = document.getElementById('btn-task-save');
-            if(taskSubmitBtn && !taskSubmitBtn.disabled) taskSubmitBtn.textContent = t('profile.save');
+            if(taskSubmitBtn && !taskSubmitBtn.disabled) taskSubmitBtn.textContent = taskId ? t('task.update') : t('profile.save');
             
             // Update task difficulty options
             const taskDifficulty = document.getElementById('task-difficulty');
@@ -961,6 +1077,14 @@
                     <option value="4" ${currentVal==='4'?'selected':''}>${t('task.veryhard')}</option>
                     <option value="5" ${currentVal==='5'?'selected':''}>${t('task.extreme')}</option>
                 `;
+            }
+            
+            // Update Assignee Dropdown Text without losing value
+            const selectAssignee = document.getElementById('task-assignee');
+            if(selectAssignee) {
+                const currAssigneeVal = selectAssignee.value;
+                renderAssigneeDropdown();
+                selectAssignee.value = currAssigneeVal;
             }
             
             // Done Modal
@@ -992,6 +1116,12 @@
             safeSetText('btn-pin-submit', 'pin.ok');
             const pinError = document.getElementById('pin-error');
             if(pinError) pinError.textContent = t('pin.wrong');
+
+            // Delete Confirm Modal
+            safeSetText('delete-confirm-title', 'delete.title');
+            safeSetText('delete-confirm-warn', 'delete.warning');
+            safeSetHtml('delete-confirm-label', t('delete.instruction'));
+            safeSetText('btn-text-del-cancel', 'profile.cancel');
         }
         
         function initLanguage() {
@@ -1052,11 +1182,11 @@
                 if(!span) return;
                 const parent = span.parentElement;
                 if (status === 'online') {
-                    parent.innerHTML = `<i class="fas fa-check-circle text-green-500"></i><span class="text-green-600 dark:text-green-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.online')}</span>`;
+                    parent.innerHTML = `<i class="fas fa-check-circle text-green-500"></i><span class="text-green-600 dark:text-green-400 ml-1 text-[10px] md:text-xs truncate" id="${span.id}">${t('sync.online')}</span>`;
                 } else if (status === 'offline') {
-                    parent.innerHTML = `<i class="fas fa-times-circle text-red-500"></i><span class="text-red-600 dark:text-red-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.offline')}</span>`;
+                    parent.innerHTML = `<i class="fas fa-times-circle text-red-500"></i><span class="text-red-600 dark:text-red-400 ml-1 text-[10px] md:text-xs truncate" id="${span.id}">${t('sync.offline')}</span>`;
                 } else if (status === 'syncing') {
-                    parent.innerHTML = `<i class="fas fa-sync fa-spin text-blue-500"></i><span class="text-blue-600 dark:text-blue-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.syncing')}</span>`;
+                    parent.innerHTML = `<i class="fas fa-sync fa-spin text-blue-500"></i><span class="text-blue-600 dark:text-blue-400 ml-1 text-[10px] md:text-xs truncate" id="${span.id}">${t('sync.syncing')}</span>`;
                 }
             });
         }
@@ -1143,10 +1273,69 @@
             reader.readAsDataURL(file);
         });
 
+        // --- PRESENCE LOGIC ---
+        async function updatePresence(isOffline = false) {
+            if (!currentUserProfile || isGuestMode) return;
+            try {
+                await updateDoc(doc(db, ...usersPath, currentUserProfile.uid), {
+                    lastActive: isOffline ? 0 : Date.now()
+                });
+            } catch(e) { console.warn("Presence update failed", e); }
+        }
+
+        function startPresence() {
+            updatePresence();
+            if(presenceInterval) clearInterval(presenceInterval);
+            presenceInterval = setInterval(() => updatePresence(), 60000); // Ping every 1 min
+        }
+
+        function stopPresence() {
+            if(presenceInterval) clearInterval(presenceInterval);
+            updatePresence(true); // Mark offline
+        }
+
+        // Attempt to mark offline on browser close/refresh
+        window.addEventListener('beforeunload', () => {
+            if (currentUserProfile && !isGuestMode) {
+                updateDoc(doc(db, ...usersPath, currentUserProfile.uid), { lastActive: 0 });
+            }
+        });
+
+        function renderActiveUsers() {
+            const container = document.getElementById('active-users-list');
+            if(!container) return;
+            
+            const now = Date.now();
+            const activeProfiles = allProfiles.filter(p => p.lastActive && (now - p.lastActive < 180000)); // 3 mins expiry
+            
+            if(activeProfiles.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            activeProfiles.slice(0, 4).forEach(p => {
+                html += `<img src="${p.avatar}" class="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-white dark:border-gray-900 bg-white object-cover relative z-10 hover:z-20 hover:scale-110 transition-transform" title="${p.name} (${t('header.online')})">`;
+            });
+            
+            if(activeProfiles.length > 4) {
+                html += `<div class="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] md:text-xs font-bold text-gray-600 dark:text-gray-300 relative z-0">+${activeProfiles.length - 4}</div>`;
+            }
+            
+            // Add a small green dot indicator to the group
+            html += `<div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full z-30" title="${t('header.online')}"></div>`;
+
+            container.innerHTML = `<div class="relative flex items-center -space-x-2 mr-2 cursor-pointer">${html}</div>`;
+        }
+
+        // Clean up stale users in UI every 30 seconds
+        setInterval(renderActiveUsers, 30000);
+
         // --- PROFILE LOGIC ---
         function listenToProfiles() {
             onSnapshot(collection(db, ...usersPath), (snapshot) => {
                 allProfiles = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+                renderActiveUsers(); // Update presence UI when DB changes
                 if (!currentUserProfile && !isGuestMode) renderProfileSelection();
                 else if (currentUserProfile && !isGuestMode) {
                     const me = allProfiles.find(p => p.uid === currentUserProfile.uid);
@@ -1205,24 +1394,24 @@
                 }
 
                 container.innerHTML += `
-                    <div class="${cardClass} flex flex-col items-center relative w-24 md:w-32" onclick="${onclickAction}">
-                        <div class="relative w-24 h-24 md:w-32 md:h-32 mb-3">
+                    <div class="${cardClass} flex flex-col items-center relative w-20 md:w-24 lg:w-32" onclick="${onclickAction}">
+                        <div class="relative w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 mb-2 md:mb-3">
                             <img src="${profile.avatar}" class="w-full h-full rounded-xl border-2 border-transparent bg-gray-200 dark:bg-gray-800 transition-colors shadow-md object-cover">
                             ${lockIcon}
                             ${overlay}
                         </div>
-                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-sm md:text-base font-medium truncate w-full text-center px-1">${profile.name}</span>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-xs md:text-sm lg:text-base font-medium truncate w-full text-center px-1">${profile.name}</span>
                     </div>
                 `;
             });
 
             if(!isManageMode) {
                 container.innerHTML += `
-                    <div class="profile-card flex flex-col items-center group relative w-24 md:w-32" onclick="openProfileModal()">
-                        <div class="w-24 h-24 md:w-32 md:h-32 mb-3 border-2 border-gray-300 dark:border-gray-600 text-gray-400 rounded-xl flex items-center justify-center text-4xl transition-colors bg-white dark:bg-gray-800 shadow-sm">
+                    <div class="profile-card flex flex-col items-center group relative w-20 md:w-24 lg:w-32" onclick="openProfileModal()">
+                        <div class="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 mb-2 md:mb-3 border-2 border-gray-300 dark:border-gray-600 text-gray-400 rounded-xl flex items-center justify-center text-3xl md:text-4xl transition-colors bg-white dark:bg-gray-800 shadow-sm">
                             <i class="fas fa-plus group-hover:text-indigo-500 transition-colors"></i>
                         </div>
-                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-sm md:text-base font-medium truncate px-1">${t('profile.add')}</span>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-xs md:text-sm lg:text-base font-medium truncate px-1">${t('profile.add')}</span>
                     </div>
                 `;
             }
@@ -1240,28 +1429,90 @@
                 document.getElementById('pin-modal').classList.remove('hidden');
                 setTimeout(() => document.getElementById('pin-entry').focus(), 100);
             } else {
-                // No PIN, simple confirm
-                const confirmMsg = t('confirm.deleteProfile').replace('{name}', name);
-                if(confirm(confirmMsg)) {
-                    performDeleteProfile(uid);
-                }
+                // No PIN -> Text Confirmation "มกุล9ยืนยันที่จะลบ"
+                document.getElementById('delete-target-uid-text').value = uid;
+                document.getElementById('delete-target-name').textContent = profile.name;
+                document.getElementById('delete-confirm-input').value = '';
+                document.getElementById('btn-confirm-delete').disabled = true;
+                document.getElementById('btn-confirm-delete').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('delete-confirm-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('delete-confirm-input').focus(), 100);
             }
+        }
+        
+        window.closeDeleteConfirmModal = function() {
+            document.getElementById('delete-confirm-modal').classList.add('hidden');
+        }
+        
+        window.checkDeleteConfirmText = function() {
+            const input = document.getElementById('delete-confirm-input').value;
+            const btn = document.getElementById('btn-confirm-delete');
+            if (input === 'มกุล9ยืนยันที่จะลบ') {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+        
+        window.executeProfileDeleteText = function() {
+            const uid = document.getElementById('delete-target-uid-text').value;
+            closeDeleteConfirmModal();
+            performDeleteProfile(uid);
         }
 
         async function performDeleteProfile(uid) {
             try {
-                await runWithSyncStatus(deleteDoc(doc(db, ...usersPath, uid)));
+                updateSyncUI('syncing');
+                // 1. Delete user profile
+                await deleteDoc(doc(db, ...usersPath, uid));
+
+                // 2. Cascade delete related reviews (where user is reviewer or reviewee)
+                const reviewsToDelete = reviews.filter(r => r.reviewerId === uid || r.revieweeId === uid);
+                for (const r of reviewsToDelete) {
+                    await deleteDoc(doc(db, ...reviewsPath, r.id));
+                }
+
+                // 3. Unassign tasks (don't delete tasks so team progress isn't lost)
+                const tasksToUnassign = tasks.filter(t => t.assigneeId === uid);
+                for (const t of tasksToUnassign) {
+                    await updateDoc(doc(db, ...tasksPath, t.id), { assigneeId: '' });
+                }
+
+                updateSyncUI(navigator.onLine ? 'online' : 'offline');
                 showToast(t('toast.profileDeleted'));
             } catch(e) { 
+                updateSyncUI(navigator.onLine ? 'online' : 'offline');
                 showToast(t('toast.deleteError'), "error"); 
             }
         }
 
         window.openProfileModal = function() {
             document.getElementById('profile-form').reset();
+            document.getElementById('setup-mode').value = 'create';
+            document.getElementById('setup-uid').value = '';
             randomizeAvatar();
+            updateModalLanguage();
             document.getElementById('profile-modal').classList.remove('hidden');
         }
+        
+        window.openEditProfileModal = function(e) {
+            if(e) e.stopPropagation();
+            if(!currentUserProfile || isGuestMode) return;
+            
+            document.getElementById('profile-form').reset();
+            document.getElementById('setup-mode').value = 'edit';
+            document.getElementById('setup-uid').value = currentUserProfile.uid;
+            
+            document.getElementById('setup-name').value = currentUserProfile.name;
+            document.getElementById('setup-avatar').src = currentUserProfile.avatar;
+            document.getElementById('setup-pin').value = currentUserProfile.pin || '';
+            
+            updateModalLanguage();
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
         window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('hidden'); }
         window.randomizeAvatar = function() { document.getElementById('setup-avatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`; }
 
@@ -1270,21 +1521,36 @@
             const btn = document.getElementById('btn-profile-save');
             btn.disabled = true; btn.textContent = '...';
             
-            const newUid = 'prof_' + Date.now();
+            const mode = document.getElementById('setup-mode').value;
+            const uid = document.getElementById('setup-uid').value || 'prof_' + Date.now();
+            
             try {
-                await runWithSyncStatus(setDoc(doc(db, ...usersPath, newUid), {
-                    uid: newUid,
+                const profileData = {
                     name: document.getElementById('setup-name').value,
                     avatar: document.getElementById('setup-avatar').src,
-                    pin: document.getElementById('setup-pin').value,
-                    createdAt: serverTimestamp()
-                }));
+                    pin: document.getElementById('setup-pin').value
+                };
+
+                if (mode === 'create') {
+                    profileData.uid = uid;
+                    profileData.createdAt = serverTimestamp();
+                    await runWithSyncStatus(setDoc(doc(db, ...usersPath, uid), profileData));
+                    showToast(t('toast.profileCreated'));
+                } else {
+                    await runWithSyncStatus(updateDoc(doc(db, ...usersPath, uid), profileData));
+                    currentUserProfile = { ...currentUserProfile, ...profileData };
+                    updateUserUI();
+                    showToast(t('toast.profileUpdated'));
+                }
+                
                 closeProfileModal();
-                showToast(t('toast.profileCreated'));
             } catch(err) { 
-                showToast(t('toast.profileError'), "error"); 
+                showToast(mode === 'create' ? t('toast.profileError') : t('toast.profileUpdateError'), "error"); 
             } 
-            finally { btn.disabled = false; btn.textContent = t('profile.save'); }
+            finally { 
+                btn.disabled = false; 
+                btn.textContent = mode === 'create' ? t('profile.save') : t('profile.update'); 
+            }
         }
 
         window.selectProfile = function(uid) {
@@ -1333,10 +1599,14 @@
             document.getElementById('auth-screen').classList.add('hidden');
             setupAppListeners();
             switchTab('board');
+            startPresence(); // Start sending active signals
             
             // Enable all actions for regular users
             const addTaskBtn = document.querySelector('#btn-add-task');
             if(addTaskBtn) addTaskBtn.style.display = 'flex';
+            
+            const headerEditBtn = document.getElementById('btn-header-edit');
+            if(headerEditBtn) headerEditBtn.classList.remove('hidden');
             
             const roleEl = document.getElementById('current-user-role');
             if(roleEl) roleEl.textContent = t('nav.currentUser');
@@ -1345,11 +1615,11 @@
             ['board', 'dashboard', 'review', 'logs'].forEach(t => {
                 document.getElementById(`nav-${t}`).classList.remove('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
                 document.getElementById(`nav-${t}`).classList.add('text-gray-600', 'dark:text-gray-400');
-                document.getElementById(`nav-${t}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                document.getElementById(`nav-${t}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-50', 'dark:bg-indigo-900/30');
                 document.getElementById(`nav-${t}-mob`).classList.add('text-gray-500', 'dark:text-gray-400');
             });
             document.getElementById('nav-board').classList.add('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
-            document.getElementById('nav-board-mob').classList.add('text-indigo-600', 'dark:text-indigo-400');
+            document.getElementById('nav-board-mob').classList.add('text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-50', 'dark:bg-indigo-900/30');
         }
         
         window.loginAsGuest = function() {
@@ -1369,6 +1639,9 @@
             const addTaskBtn = document.querySelector('#btn-add-task');
             if(addTaskBtn) addTaskBtn.style.display = 'none';
             
+            const headerEditBtn = document.getElementById('btn-header-edit');
+            if(headerEditBtn) headerEditBtn.classList.add('hidden');
+            
             // Update user role display
             const roleEl = document.getElementById('current-user-role');
             if(roleEl) roleEl.innerHTML = `<i class="fas fa-eye text-amber-500 mr-1"></i>${t('nav.guestMode')}`;
@@ -1377,6 +1650,7 @@
         }
 
         window.handleLogout = function() {
+            stopPresence(); // Mark offline immediately
             currentUserProfile = null;
             isGuestMode = false;
             document.getElementById('auth-screen').classList.remove('hidden');
@@ -1391,6 +1665,10 @@
             // Reset UI
             const addTaskBtn = document.querySelector('#btn-add-task');
             if(addTaskBtn) addTaskBtn.style.display = 'flex';
+            
+            const headerEditBtn = document.getElementById('btn-header-edit');
+            if(headerEditBtn) headerEditBtn.classList.add('hidden');
+            
             const roleEl = document.getElementById('current-user-role');
             if(roleEl) roleEl.textContent = t('nav.currentUser');
             
@@ -1445,6 +1723,7 @@
             const select = document.getElementById('task-assignee');
             if(!select) return;
             select.innerHTML = `<option value="">${t('task.none')}</option>`;
+            select.innerHTML += `<option value="everyone" class="font-semibold text-indigo-600 dark:text-indigo-400">&#128101; ${t('task.everyone')}</option>`;
             allProfiles.forEach(u => {
                 const meLabel = currentUserProfile && u.uid === currentUserProfile.uid && !isGuestMode ? ` ${t('task.me')}` : '';
                 select.innerHTML += `<option value="${u.uid}">${u.name}${meLabel}</option>`;
@@ -1456,12 +1735,12 @@
                 document.getElementById(`view-${tab}`).classList.add('hidden');
                 document.getElementById(`nav-${tab}`).classList.remove('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
                 document.getElementById(`nav-${tab}`).classList.add('text-gray-600', 'dark:text-gray-400');
-                document.getElementById(`nav-${tab}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                document.getElementById(`nav-${tab}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-50', 'dark:bg-indigo-900/30');
                 document.getElementById(`nav-${tab}-mob`).classList.add('text-gray-500', 'dark:text-gray-400');
             });
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
             document.getElementById(`nav-${tabName}`).classList.add('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
-            document.getElementById(`nav-${tabName}-mob`).classList.add('text-indigo-600', 'dark:text-indigo-400');
+            document.getElementById(`nav-${tabName}-mob`).classList.add('text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-50', 'dark:bg-indigo-900/30');
 
             const titles = { 
                 'board': t('header.board'), 
@@ -1481,36 +1760,107 @@
                 return;
             }
             document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            
             const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setMinutes(tomorrow.getMinutes() - tomorrow.getTimezoneOffset());
             document.getElementById('task-duedate').value = tomorrow.toISOString().slice(0, 16);
+            
+            safeSetText('modal-task-title', 'task.create');
+            document.getElementById('btn-task-save').textContent = t('profile.save');
+            document.getElementById('btn-task-delete').classList.add('hidden'); // Hide delete button for new task
+            
             document.getElementById('task-modal').classList.remove('hidden');
         }
+        
+        window.openEditTaskModal = function(taskId) {
+            if (isGuestMode) {
+                showToast(t('toast.guestNoEdit'), "error");
+                return;
+            }
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = task.id;
+            
+            document.getElementById('task-title').value = task.title || '';
+            document.getElementById('task-desc').value = task.desc || '';
+            document.getElementById('task-category').value = task.category || '';
+            document.getElementById('task-assignee').value = task.assigneeId || '';
+            document.getElementById('task-difficulty').value = task.difficulty || '3';
+
+            const d = new Date(task.dueDateMs);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('task-duedate').value = d.toISOString().slice(0, 16);
+
+            safeSetText('modal-task-title', 'task.edit');
+            document.getElementById('btn-task-save').textContent = t('task.update');
+            document.getElementById('btn-task-delete').classList.remove('hidden'); // Show delete button
+            
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+        
+        window.deleteTaskAction = async function() {
+            const taskId = document.getElementById('task-id').value;
+            if(!taskId) return;
+            
+            if(confirm(t('confirm.deleteTask'))) {
+                const task = tasks.find(t => t.id === taskId);
+                const title = task ? task.title : 'Task';
+                try {
+                    await runWithSyncStatus(deleteDoc(doc(db, ...tasksPath, taskId)));
+                    logActivity(currentLang === 'th' ? `ลบงาน "${title}"` : `Deleted task "${title}"`);
+                    showToast(t('toast.taskDeleted'), "success");
+                    closeModal('task-modal');
+                } catch (e) {
+                    showToast(t('toast.deleteError'), "error");
+                }
+            }
+        }
+
         window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-        document.getElementById('task-form').addEventListener('submit', async (e) => {
+        window.submitTask = async function(e) {
             e.preventDefault();
             if (!currentUserProfile) return;
             const btn = document.getElementById('btn-task-save');
             btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
+            const taskId = document.getElementById('task-id').value;
+            const taskData = {
+                title: document.getElementById('task-title').value,
+                desc: document.getElementById('task-desc').value,
+                category: document.getElementById('task-category').value.trim() || '',
+                assigneeId: document.getElementById('task-assignee').value,
+                difficulty: parseInt(document.getElementById('task-difficulty').value),
+                dueDateMs: new Date(document.getElementById('task-duedate').value).getTime()
+            };
+
             try {
-                await runWithSyncStatus(addDoc(collection(db, ...tasksPath), {
-                    title: document.getElementById('task-title').value,
-                    desc: document.getElementById('task-desc').value,
-                    assigneeId: document.getElementById('task-assignee').value,
-                    difficulty: parseInt(document.getElementById('task-difficulty').value),
-                    dueDateMs: new Date(document.getElementById('task-duedate').value).getTime(),
-                    status: 'todo', creatorId: currentUserProfile.uid, createdAt: serverTimestamp(), completedAtMs: null
-                }));
-                const taskTitle = document.getElementById('task-title').value;
-                logActivity(currentLang === 'th' ? `สร้างงานใหม่ "${taskTitle}"` : `Created new task "${taskTitle}"`);
-                showToast(t('toast.taskAdded'), "success");
+                if (taskId) {
+                    // Edit existing task
+                    await runWithSyncStatus(updateDoc(doc(db, ...tasksPath, taskId), taskData));
+                    logActivity(currentLang === 'th' ? `แก้ไขงาน "${taskData.title}"` : `Edited task "${taskData.title}"`);
+                    showToast(t('toast.taskUpdated'), "success");
+                } else {
+                    // Create new task
+                    taskData.status = 'todo';
+                    taskData.creatorId = currentUserProfile.uid;
+                    taskData.createdAt = serverTimestamp();
+                    taskData.completedAtMs = null;
+                    await runWithSyncStatus(addDoc(collection(db, ...tasksPath), taskData));
+                    logActivity(currentLang === 'th' ? `สร้างงานใหม่ "${taskData.title}"` : `Created new task "${taskData.title}"`);
+                    showToast(t('toast.taskAdded'), "success");
+                }
                 closeModal('task-modal');
             } catch (error) { 
                 showToast(t('toast.saveError'), "error"); 
             } 
-            finally { btn.disabled = false; btn.textContent = t('profile.save'); }
-        });
+            finally { 
+                btn.disabled = false; 
+                btn.textContent = taskId ? t('task.update') : t('profile.save'); 
+            }
+        };
 
         // --- EXTENDED TASK ACTION LOGIC ---
         let currentSelectElement = null;
@@ -1655,7 +2005,10 @@
         }
 
         function getUserInfo(uid) {
-            if(!uid) return { 
+            if (uid === 'everyone') {
+                return { name: t('task.everyone'), avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=group&backgroundColor=4f46e5' };
+            }
+            if (!uid) return { 
                 name: currentLang === 'th' ? 'ไม่ระบุ' : 'Unassigned', 
                 avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=all' 
             };
@@ -1671,75 +2024,94 @@
                 const el = document.getElementById(`col-${status}`);
                 document.getElementById(`count-${status}`).textContent = cols[status].length;
                 el.innerHTML = '';
-
+                
+                // Group tasks by category
+                const categoryGroups = {};
                 cols[status].sort((a,b) => a.dueDateMs - b.dueDateMs).forEach(task => {
-                    const assignee = getUserInfo(task.assigneeId);
-                    const due = new Date(task.dueDateMs);
-                    const isOverdue = Date.now() > task.dueDateMs && status !== 'done';
-                    
-                    const dueLabel = t('board.due');
-                    let timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md ${isOverdue ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}">
-                        <i class="far fa-clock"></i> ${dueLabel}: ${due.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', {day:'2-digit', month:'short'})} ${due.getHours()}:${String(due.getMinutes()).padStart(2,'0')}
-                    </span>`;
+                    const cat = task.category || t('board.general');
+                    if(!categoryGroups[cat]) categoryGroups[cat] = [];
+                    categoryGroups[cat].push(task);
+                });
 
-                    if (status === 'done' && task.completedAtMs) {
-                        const diff = task.completedAtMs - task.dueDateMs;
-                        if (diff <= 0) timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 font-bold"><i class="fas fa-check"></i> ${t('board.ontime')}</span>`;
-                        else timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold"><i class="fas fa-exclamation-triangle"></i> ${t('board.late')}</span>`;
-                    }
+                Object.keys(categoryGroups).sort().forEach(cat => {
+                    // Category Header
+                    const header = document.createElement('div');
+                    header.className = 'text-[11px] md:text-xs font-bold text-gray-500 dark:text-gray-400 mt-4 mb-2 px-1 flex items-center bg-gray-200/50 dark:bg-gray-800/80 rounded py-1 border-l-2 border-indigo-400';
+                    header.innerHTML = `<i class="fas fa-folder-open mr-1.5 ml-1 text-indigo-500 dark:text-indigo-400"></i> <span class="truncate">${cat.replace(/</g, "&lt;")}</span>`;
+                    el.appendChild(header);
 
-                    // Extra Details (Report or Extension)
-                    let extraInfo = '';
-                    if (status === 'done' && task.completionReport) {
-                        extraInfo = `<div class="mt-2 bg-green-50 dark:bg-green-900/20 p-2 rounded border border-green-100 dark:border-green-800/50 text-[10px] text-green-800 dark:text-green-300">
-                            <strong><i class="fas fa-comment-dots"></i> ${t('board.result')}:</strong> ${task.completionReport.replace(/</g, "&lt;")}
-                        </div>`;
-                    } else if (status !== 'done' && task.extensionData) {
-                        extraInfo = `<div class="mt-2 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-100 dark:border-amber-800/50 text-[10px] text-amber-800 dark:text-amber-300">
-                            <strong><i class="fas fa-history"></i> ${t('board.extended')}:</strong> ${task.extensionData.reason.replace(/</g, "&lt;")}
-                        </div>`;
-                    }
-
-                    const card = document.createElement('div');
-                    card.className = "bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow relative group";
-                    
-                    // Create select element separately to avoid escaping issues
-                    const selectId = `select-${task.id}`;
-                    card.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] uppercase font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded">${t('board.weight')}: ${task.difficulty}</span>
-                            <select id="${selectId}" class="text-xs border border-gray-200 dark:border-gray-600 rounded text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 cursor-pointer outline-none px-1 py-0.5">
-                                <option value="">${t('board.manage')}</option>
-                                <option value="todo" ${status==='todo'?'selected':''}>${t('board.todo')}</option>
-                                <option value="doing" ${status==='doing'?'selected':''}>${t('board.doing')}</option>
-                                <option value="done" ${status==='done'?'selected':''}>${t('board.submitWork')}</option>
-                                ${status !== 'done' ? `<option value="extend">${t('board.extend')}</option>` : ''}
-                            </select>
-                        </div>
-                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-sm leading-tight">${task.title.replace(/</g, "&lt;")}</h4>
-                        ${task.desc ? `<p class="text-[11px] text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">${task.desc.replace(/</g, "&lt;")}</p>` : ''}
+                    categoryGroups[cat].forEach(task => {
+                        const assignee = getUserInfo(task.assigneeId);
+                        const due = new Date(task.dueDateMs);
+                        const isOverdue = Date.now() > task.dueDateMs && status !== 'done';
                         
-                        ${extraInfo}
+                        const dueLabel = t('board.due');
+                        let timeTag = `<span class="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-md ${isOverdue ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}">
+                            <i class="far fa-clock"></i> ${dueLabel}: ${due.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', {day:'2-digit', month:'short'})} ${due.getHours()}:${String(due.getMinutes()).padStart(2,'0')}
+                        </span>`;
 
-                        <div class="mt-3 flex items-center justify-between gap-2">
-                            <div class="flex items-center space-x-2" title="${assignee.name}">
-                                <img src="${assignee.avatar}" class="w-5 h-5 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover">
-                                <span class="text-[10px] font-medium text-gray-600 dark:text-gray-400 truncate max-w-[60px]">${assignee.name.split(' ')[0]}</span>
+                        if (status === 'done' && task.completedAtMs) {
+                            const diff = task.completedAtMs - task.dueDateMs;
+                            if (diff <= 0) timeTag = `<span class="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-md bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 font-bold"><i class="fas fa-check"></i> ${t('board.ontime')}</span>`;
+                            else timeTag = `<span class="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold"><i class="fas fa-exclamation-triangle"></i> ${t('board.late')}</span>`;
+                        }
+
+                        // Extra Details (Report or Extension)
+                        let extraInfo = '';
+                        if (status === 'done' && task.completionReport) {
+                            extraInfo = `<div class="mt-2 bg-green-50 dark:bg-green-900/20 p-2 rounded border border-green-100 dark:border-green-800/50 text-[10px] text-green-800 dark:text-green-300">
+                                <strong><i class="fas fa-comment-dots"></i> ${t('board.result')}:</strong> ${task.completionReport.replace(/</g, "&lt;")}
+                            </div>`;
+                        } else if (status !== 'done' && task.extensionData) {
+                            extraInfo = `<div class="mt-2 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-100 dark:border-amber-800/50 text-[10px] text-amber-800 dark:text-amber-300">
+                                <strong><i class="fas fa-history"></i> ${t('board.extended')}:</strong> ${task.extensionData.reason.replace(/</g, "&lt;")}
+                            </div>`;
+                        }
+
+                        const card = document.createElement('div');
+                        card.className = "bg-white dark:bg-gray-800 p-2.5 md:p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow relative group";
+                        
+                        // Create select element separately to avoid escaping issues
+                        const selectId = `select-${task.id}`;
+                        card.innerHTML = `
+                            <div class="flex justify-between items-start mb-2 gap-2">
+                                <span class="text-[8px] md:text-[9px] uppercase font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-1.5 md:px-2 py-0.5 rounded shrink-0">${t('board.weight')}: ${task.difficulty}</span>
+                                <div class="flex items-center space-x-1.5">
+                                    <button onclick="openEditTaskModal('${task.id}')" class="text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors p-1" title="${t('task.edit')}"><i class="fas fa-edit"></i></button>
+                                    <select id="${selectId}" class="text-[10px] md:text-xs border border-gray-200 dark:border-gray-600 rounded text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 cursor-pointer outline-none px-1 py-0.5">
+                                        <option value="">${t('board.manage')}</option>
+                                        <option value="todo" ${status==='todo'?'selected':''}>${t('board.todo')}</option>
+                                        <option value="doing" ${status==='doing'?'selected':''}>${t('board.doing')}</option>
+                                        <option value="done" ${status==='done'?'selected':''}>${t('board.submitWork')}</option>
+                                        ${status !== 'done' ? `<option value="extend">${t('board.extend')}</option>` : ''}
+                                    </select>
+                                </div>
                             </div>
-                            ${timeTag}
-                        </div>
-                    `;
-                    el.appendChild(card);
-                    
-                    // Attach event listener after element is added to DOM
-                    const selectElement = document.getElementById(selectId);
-                    if(selectElement) {
-                        selectElement.addEventListener('change', function() {
-                            if(this.value) {
-                                handleTaskAction(task.id, this.value, task.title, status, this);
-                            }
-                        });
-                    }
+                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-xs md:text-sm leading-tight">${task.title.replace(/</g, "&lt;")}</h4>
+                            ${task.desc ? `<p class="text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">${task.desc.replace(/</g, "&lt;")}</p>` : ''}
+                            
+                            ${extraInfo}
+
+                            <div class="mt-3 flex items-center justify-between gap-1 md:gap-2">
+                                <div class="flex items-center space-x-1.5 md:space-x-2" title="${assignee.name}">
+                                    <img src="${assignee.avatar}" class="w-4 h-4 md:w-5 md:h-5 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shrink-0">
+                                    <span class="text-[9px] md:text-[10px] font-medium text-gray-600 dark:text-gray-400 truncate max-w-[50px] md:max-w-[60px]">${assignee.name.split(' ')[0]}</span>
+                                </div>
+                                ${timeTag}
+                            </div>
+                        `;
+                        el.appendChild(card);
+                        
+                        // Attach event listener after element is added to DOM
+                        const selectElement = document.getElementById(selectId);
+                        if(selectElement) {
+                            selectElement.addEventListener('change', function() {
+                                if(this.value) {
+                                    handleTaskAction(task.id, this.value, task.title, status, this);
+                                }
+                            });
+                        }
+                    });
                 });
             });
         }
@@ -1747,17 +2119,17 @@
         function renderLogs() {
             const list = document.getElementById('log-list');
             list.innerHTML = '';
-            if(logs.length === 0) return list.innerHTML = `<li class="p-6 text-center text-gray-400">${t('logs.noActivity')}</li>`;
+            if(logs.length === 0) return list.innerHTML = `<li class="p-6 text-center text-gray-400 text-sm">${t('logs.noActivity')}</li>`;
 
             logs.slice(0, 30).forEach(log => {
                 const user = getUserInfo(log.userId);
                 let timeStr = log.timestamp ? `${log.timestamp.toDate().toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US')} ${log.timestamp.toDate().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US')}` : '';
                 list.innerHTML += `
                     <li class="p-3 flex items-start space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                        <img src="${user.avatar}" class="w-8 h-8 rounded-lg border border-gray-200 dark:border-gray-600 shrink-0 object-cover">
+                        <img src="${user.avatar}" class="w-6 h-6 md:w-8 md:h-8 rounded-lg border border-gray-200 dark:border-gray-600 shrink-0 object-cover">
                         <div>
-                            <p class="text-xs text-gray-800 dark:text-gray-200"><span class="font-semibold">${user.name}</span> ${log.action.replace(/</g, "&lt;")}</p>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5"><i class="far fa-clock"></i> ${timeStr}</p>
+                            <p class="text-[11px] md:text-xs text-gray-800 dark:text-gray-200"><span class="font-semibold">${user.name}</span> ${log.action.replace(/</g, "&lt;")}</p>
+                            <p class="text-[9px] md:text-[10px] text-gray-400 dark:text-gray-500 mt-0.5"><i class="far fa-clock"></i> ${timeStr}</p>
                         </div>
                     </li>`;
             });
@@ -1788,12 +2160,12 @@
             
             // Show message for guest users
             if(isGuestMode) {
-                container.innerHTML = `<div class="col-span-1 md:col-span-2 text-center text-amber-600 dark:text-amber-400 p-6 bg-amber-50 dark:bg-amber-900/20 rounded-xl border-2 border-dashed border-amber-300 dark:border-amber-700"><i class="fas fa-eye text-3xl mb-3"></i><p class="font-medium">${t('review.guestMsg')}</p><p class="text-sm mt-1 opacity-75">${t('review.guestDesc')}</p></div>`;
+                container.innerHTML = `<div class="col-span-1 lg:col-span-2 text-center text-amber-600 dark:text-amber-400 p-6 bg-amber-50 dark:bg-amber-900/20 rounded-xl border-2 border-dashed border-amber-300 dark:border-amber-700"><i class="fas fa-eye text-2xl md:text-3xl mb-2 md:mb-3"></i><p class="text-sm md:text-base font-medium">${t('review.guestMsg')}</p><p class="text-xs md:text-sm mt-1 opacity-75">${t('review.guestDesc')}</p></div>`;
                 return;
             }
             
             const others = allProfiles.filter(u => u.uid !== currentUserProfile.uid);
-            if(others.length === 0) return container.innerHTML = `<div class="col-span-1 md:col-span-2 text-center text-gray-400 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">${t('review.noMembers')}</div>`;
+            if(others.length === 0) return container.innerHTML = `<div class="col-span-1 lg:col-span-2 text-center text-gray-400 text-sm p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">${t('review.noMembers')}</div>`;
 
             others.forEach(user => {
                 const myReview = reviews.find(r => r.reviewerId === currentUserProfile.uid && r.revieweeId === user.uid);
@@ -1801,18 +2173,18 @@
                 let starsHtml = '';
                 for(let i=1; i<=5; i++) {
                     const activeClass = i <= currentStars ? 'text-amber-500 active scale-110' : 'text-gray-300 dark:text-gray-600';
-                    starsHtml += `<i class="fas fa-star text-2xl mx-1 transition-all ${activeClass}" onclick="rateUser('${user.uid}', ${i})"></i>`;
+                    starsHtml += `<i class="fas fa-star text-xl md:text-2xl mx-0.5 md:mx-1 transition-all ${activeClass}" onclick="rateUser('${user.uid}', ${i})"></i>`;
                 }
                 
                 const ratingText = currentStars > 0 ? `${t('review.rated')} ${currentStars} ${t('review.stars')}` : t('review.notRated');
 
                 container.innerHTML += `
-                    <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center md:justify-between space-y-4 md:space-y-0 text-center md:text-left">
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center md:justify-between space-y-3 md:space-y-0 text-center md:text-left">
                         <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3">
-                            <img src="${user.avatar}" class="w-12 h-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 object-cover">
+                            <img src="${user.avatar}" class="w-10 h-10 md:w-12 md:h-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 object-cover shrink-0">
                             <div>
-                                <h4 class="font-semibold text-gray-800 dark:text-gray-100">${user.name}</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">${ratingText}</p>
+                                <h4 class="text-sm md:text-base font-semibold text-gray-800 dark:text-gray-100">${user.name}</h4>
+                                <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">${ratingText}</p>
                             </div>
                         </div>
                         <div class="star-rating flex">${starsHtml}</div>
@@ -1829,14 +2201,14 @@
 
         function renderStarsStatic(avgStr) {
             const avg = parseFloat(avgStr);
-            if(avg === 0) return `<span class="text-xs text-gray-400">${t('dash.noData')}</span>`;
+            if(avg === 0) return `<span class="text-[10px] md:text-xs text-gray-400">${t('dash.noData')}</span>`;
             let html = '';
             for(let i=1; i<=5; i++) {
                 if(avg >= i) html += '<i class="fas fa-star text-amber-400"></i>';
                 else if(avg >= i - 0.5) html += '<i class="fas fa-star-half-alt text-amber-400"></i>';
                 else html += '<i class="far fa-star text-gray-300 dark:text-gray-600"></i>';
             }
-            return `<span class="flex items-center justify-center space-x-1">${html} <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 ml-1">(${avg})</span></span>`;
+            return `<span class="flex items-center justify-center space-x-0.5 md:space-x-1">${html} <span class="text-[9px] md:text-[10px] font-bold text-gray-600 dark:text-gray-400 ml-1">(${avg})</span></span>`;
         }
 
         function updateDashboard() {
@@ -1864,7 +2236,18 @@
 
             let globalTotalWeight = 0;
             tasks.forEach(t => {
-                if(t.assigneeId && userStats[t.assigneeId]) {
+                if (t.assigneeId === 'everyone') {
+                    // Account for all active members
+                    Object.keys(userStats).forEach(uid => {
+                        userStats[uid].totalAssigned++;
+                        if(t.status === 'done') {
+                            userStats[uid].doneTotal++; userStats[uid].totalWeight += t.difficulty; 
+                            // Add to global total weight only once per person to balance math
+                            globalTotalWeight += t.difficulty;
+                            if (t.completedAtMs <= t.dueDateMs) userStats[uid].doneOnTime++; else userStats[uid].doneLate++;
+                        }
+                    });
+                } else if(t.assigneeId && userStats[t.assigneeId]) {
                     userStats[t.assigneeId].totalAssigned++;
                     if(t.status === 'done') {
                         userStats[t.assigneeId].doneTotal++; userStats[t.assigneeId].totalWeight += t.difficulty; globalTotalWeight += t.difficulty;
@@ -1891,39 +2274,39 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-colors">
-                        <td class="py-3 px-4 min-w-[120px]">
-                            <div class="flex items-center space-x-3">
-                                <img src="${stat.avatar}" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shadow-sm shrink-0">
-                                <span class="font-semibold text-gray-800 dark:text-gray-100 truncate">${stat.name}</span>
+                        <td class="py-2 md:py-3 px-3 md:px-4 min-w-[100px] md:min-w-[120px]">
+                            <div class="flex items-center space-x-2 md:space-x-3">
+                                <img src="${stat.avatar}" class="w-6 h-6 md:w-9 md:h-9 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shadow-sm shrink-0">
+                                <span class="font-semibold text-[10px] md:text-sm text-gray-800 dark:text-gray-100 truncate">${stat.name}</span>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-center">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${stat.doneTotal}</span>
-                            <span class="text-xs text-gray-400 dark:text-gray-500"> / ${stat.totalAssigned}</span>
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-center">
+                            <span class="text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300">${stat.doneTotal}</span>
+                            <span class="text-[9px] md:text-xs text-gray-400 dark:text-gray-500"> / ${stat.totalAssigned}</span>
                         </td>
-                        <td class="py-3 px-4 text-center">
-                            <div class="flex items-center justify-center space-x-2">
-                                <span class="text-green-600 dark:text-green-400 text-xs font-bold bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-md border border-green-200 dark:border-green-800">
-                                    <i class="fas fa-check text-[10px] mr-1"></i>${stat.doneOnTime}
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-center">
+                            <div class="flex items-center justify-center space-x-1.5 md:space-x-2">
+                                <span class="text-green-600 dark:text-green-400 text-[10px] md:text-xs font-bold bg-green-50 dark:bg-green-900/30 px-1.5 md:px-2 py-0.5 md:py-1 rounded-md border border-green-200 dark:border-green-800">
+                                    <i class="fas fa-check text-[8px] md:text-[10px] mr-1"></i>${stat.doneOnTime}
                                 </span>
-                                <span class="text-red-500 dark:text-red-400 text-xs font-bold bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-md border border-red-200 dark:border-red-800">
-                                    <i class="fas fa-times text-[10px] mr-1"></i>${stat.doneLate}
+                                <span class="text-red-500 dark:text-red-400 text-[10px] md:text-xs font-bold bg-red-50 dark:bg-red-900/30 px-1.5 md:px-2 py-0.5 md:py-1 rounded-md border border-red-200 dark:border-red-800">
+                                    <i class="fas fa-times text-[8px] md:text-[10px] mr-1"></i>${stat.doneLate}
                                 </span>
                             </div>
                         </td>
-                        <td class="py-3 px-4 text-center min-w-[100px]">${renderStarsStatic(avgStars)}</td>
-                        <td class="py-3 px-4 text-center">
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-center min-w-[80px] md:min-w-[100px]">${renderStarsStatic(avgStars)}</td>
+                        <td class="py-2 md:py-3 px-3 md:px-4 text-center">
                             ${stat.totalAssigned > 0 ? `
-                                <div class="inline-flex items-center space-x-2">
-                                    <span class="font-bold text-lg text-indigo-600 dark:text-indigo-400">${stat.score}%</span>
-                                    ${stat.score >= 80 ? '<i class="fas fa-trophy text-amber-500"></i>' : ''}
+                                <div class="inline-flex items-center space-x-1 md:space-x-2">
+                                    <span class="font-bold text-sm md:text-lg text-indigo-600 dark:text-indigo-400">${stat.score}%</span>
+                                    ${stat.score >= 80 ? '<i class="fas fa-trophy text-amber-500 text-xs md:text-sm"></i>' : ''}
                                 </div>
-                            ` : `<span class="text-gray-400 dark:text-gray-600 font-normal text-sm">${t('dash.noData')}</span>`}
+                            ` : `<span class="text-gray-400 dark:text-gray-600 font-normal text-[10px] md:text-sm">${t('dash.noData')}</span>`}
                         </td>
                     </tr>
                 `;
             });
-            if (Object.values(userStats).length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400">${t('dash.noData')}</td></tr>`;
+            if (Object.values(userStats).length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400 text-sm">${t('dash.noData')}</td></tr>`;
 
             renderCharts(perfLabels, perfData, { todo: tasks.filter(t=>t.status==='todo').length, doing: tasks.filter(t=>t.status==='doing').length, done: doneTasks.length });
         }
@@ -1954,6 +2337,7 @@
             const isDark = document.documentElement.classList.contains('dark');
             const textColor = isDark ? '#9ca3af' : '#4b5563';
             const gridColor = isDark ? '#374151' : '#e5e7eb';
+            const isMobile = window.innerWidth < 768;
 
             const ctxPerf = document.getElementById('performanceChart');
             if(ctxPerf) {
@@ -1970,8 +2354,8 @@
                                 if(score >= 40) return 'rgba(251, 191, 36, 0.8)';
                                 return 'rgba(239, 68, 68, 0.8)';
                             }),
-                            borderRadius: 6,
-                            borderWidth: 2,
+                            borderRadius: 4,
+                            borderWidth: 1,
                             borderColor: perfData.map(score => {
                                 if(score >= 80) return 'rgba(34, 197, 94, 1)';
                                 if(score >= 60) return 'rgba(99, 102, 241, 1)';
@@ -1989,18 +2373,21 @@
                                 max: 100, 
                                 ticks: { 
                                     color: textColor,
+                                    font: { size: isMobile ? 9 : 11 },
                                     callback: function(value) { return value + '%'; }
                                 }, 
                                 grid: { color: gridColor }
                             },
                             x: { 
-                                ticks: { color: textColor, font: { weight: 'bold' } }, 
+                                ticks: { color: textColor, font: { weight: 'bold', size: isMobile ? 9 : 11 } }, 
                                 grid: { display: false } 
                             }
                         }, 
                         plugins: { 
                             legend: { display: false },
                             tooltip: {
+                                titleFont: { size: isMobile ? 10 : 13 },
+                                bodyFont: { size: isMobile ? 10 : 13 },
                                 callbacks: {
                                     label: function(context) {
                                         const label = currentLang === 'th' ? 'คะแนน' : 'Score';
@@ -2022,9 +2409,9 @@
                         datasets: [{ 
                             data: [statusCounts.todo, statusCounts.doing, statusCounts.done], 
                             backgroundColor: ['#9ca3af', '#60a5fa', '#34d399'],
-                            borderWidth: 3,
+                            borderWidth: 2,
                             borderColor: isDark ? '#1f2937' : '#ffffff',
-                            hoverOffset: 8
+                            hoverOffset: 4
                         }]
                     },
                     options: { 
@@ -2036,13 +2423,15 @@
                                 position: 'bottom',
                                 labels: { 
                                     color: textColor,
-                                    padding: 15,
-                                    font: { size: 12, weight: 'bold' },
+                                    padding: isMobile ? 10 : 15,
+                                    font: { size: isMobile ? 10 : 12, weight: 'bold' },
                                     usePointStyle: true,
                                     pointStyle: 'circle'
                                 } 
                             },
                             tooltip: {
+                                titleFont: { size: isMobile ? 10 : 13 },
+                                bodyFont: { size: isMobile ? 10 : 13 },
                                 callbacks: {
                                     label: function(context) {
                                         const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -2063,7 +2452,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const color = type === 'success' ? 'bg-green-600' : 'bg-red-600';
-            toast.className = `${color} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 text-sm toast opacity-0 translate-x-10`;
+            toast.className = `${color} text-white px-3 md:px-4 py-2 md:py-3 rounded-lg shadow-lg flex items-center space-x-2 text-xs md:text-sm toast opacity-0 translate-x-10`;
             toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message.replace(/</g, "&lt;")}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('opacity-0', 'translate-x-10'), 10);
