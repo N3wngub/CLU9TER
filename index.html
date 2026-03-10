@@ -273,14 +273,17 @@
         }
 
         /* ปรับ datetime-local input บน mobile */
+        input[type="datetime-local"] {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
         @media (max-width: 640px) {
             input[type="datetime-local"] {
                 font-size: 0.75rem !important; /* text-xs = 12px */
                 padding-left: 0.625rem !important; /* px-2.5 = 10px */
                 padding-right: 0.625rem !important;
                 letter-spacing: normal !important;
-                max-width: 100% !important;
-                box-sizing: border-box !important;
             }
             input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 margin-left: 4px;
@@ -293,6 +296,12 @@
                 padding: 0;
                 margin: 0;
             }
+        }
+        
+        /* ป้องกัน Input ทุกชนิดไม่ให้ล้นออกนอก Form */
+        input, select, textarea {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
         }
 
 
@@ -995,18 +1004,16 @@
                                 <option value="">-- ไม่ระบุ --</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 md:gap-4">
                         <div>
                             <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fas fa-weight-hanging text-gray-400 mr-1.5"></i><span id="label-task-weight">น้ำหนัก (Weight)</span></label>
-                            <select id="task-difficulty" class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]"></select>
+                            <select id="task-difficulty" class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]">
                                 <option value="1">ง่าย (1 pts)</option><option value="2">ปานกลาง (2 pts)</option><option value="3" selected>ยาก (3 pts)</option><option value="4">ยากมาก (4 pts)</option><option value="5">เดอะแบก (5 pts)</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fas fa-calendar-alt text-gray-400 mr-1.5"></i><span id="label-task-duedate">กำหนดส่ง</span> <span class="text-red-500">*</span></label>
-                            <input type="datetime-local" id="task-duedate" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]">
-                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fas fa-calendar-alt text-gray-400 mr-1.5"></i><span id="label-task-duedate">กำหนดส่ง</span> <span class="text-red-500">*</span></label>
+                        <input type="datetime-local" id="task-duedate" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]">
                     </div>
                 </div>
                 
@@ -2635,6 +2642,13 @@
         }
 
         window.switchTab = function(tabName) {
+            // ตรวจสอบว่าหน้าที่จะเปิดเป็นหน้าเดิมหรือไม่
+            const targetView = document.getElementById(`view-${tabName}`);
+            if(targetView && !targetView.classList.contains('hidden')) {
+                // ถ้าเป็นหน้าเดิมที่กำลังแสดงอยู่แล้ว ไม่ต้องทำอะไร
+                return;
+            }
+            
             // Add exit animation to current view
             ['board', 'dashboard', 'review', 'logs', 'calendar'].forEach(tab => {
                 const view = document.getElementById(`view-${tab}`);
