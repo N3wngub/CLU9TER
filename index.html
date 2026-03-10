@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="th" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLU9TER - ระบบประเมินและจัดการงานกลุ่ม</title>
+    
+    <!-- Favicon & PWA / Add to Home Screen -->
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="CLU9TER">
+    <meta name="application-name" content="CLU9TER">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQ0xVOVRFUiIsInNob3J0X25hbWUiOiJDTFU5VEVSIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmOWZhZmIiLCJ0aGVtZV9jb2xvciI6IiM0ZjQ2ZTUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2QvMUJtRG9LOGtnNHZnZUNheXA2R0I3VDdTbmxuV2JBXzMtIiwic2l6ZXMiOiIxOTJ4MTkyIDUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {} }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .kanban-column { min-height: 500px; }
+        .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        .star-rating i { cursor: pointer; transition: color 0.2s, transform 0.2s; }
+        .star-rating i:hover, .star-rating i.active { color: #f59e0b; }
+        .pin-input::-webkit-outer-spin-button, .pin-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .pin-input { -moz-appearance: textfield; text-align: center; letter-spacing: 0.5em; font-size: 1.5rem; }
+        .profile-card { transition: transform 0.2s; cursor: pointer; }
+        .profile-card:hover { transform: scale(1.05); }
+        .manage-shake { animation: shake 0.5s infinite; }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(1deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-1deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .object-cover { object-fit: cover; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+    <!-- Auth Screen: Profile Selection -->
+    <div id="auth-screen" class="fixed inset-0 z-[60] bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 transition-colors duration-300">
+        <!-- Top Bar Layout Fix to prevent overlapping -->
+        <div class="w-full flex justify-between items-start md:items-center px-6 py-6 absolute top-0 left-0 right-0">
+            <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
+                <div class="flex items-center space-x-3">
+                    <img src="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-" alt="CLU9TER Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm bg-white">
+                    <h1 class="text-2xl font-bold tracking-wider text-gray-800 dark:text-white">CLU9TER</h1>
+                </div>
+                <!-- Sync Status Auth -->
+                <div class="sync-status-indicator flex items-center space-x-1.5 text-xs font-medium px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 w-max">
+                    <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1" id="sync-text-auth">ตรวจสอบสถานะ...</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Language Toggle in Auth -->
+                <button onclick="toggleLanguage()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-semibold text-sm">
+                    <span id="lang-toggle-auth">EN</span>
+                </button>
+                <!-- Theme Toggle in Auth -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full max-w-5xl flex flex-col items-center justify-center mt-16 md:mt-0">
+            <h2 class="text-3xl md:text-5xl font-semibold mb-10 text-center text-gray-800 dark:text-white" id="profile-select-title">ใครกำลังใช้งานอยู่?</h2>
+            
+            <div id="profiles-container" class="flex flex-wrap justify-center gap-6 md:gap-8 mb-16 relative z-10">
+                <!-- Profiles injected here -->
+                <div class="text-center w-24 h-24 flex items-center justify-center border-2 border-gray-300 dark:border-gray-700 rounded-md animate-pulse">
+                    <span class="text-gray-500" id="auth-loading-text">Loading...</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center space-y-4 relative z-20">
+                <button id="btn-manage-profiles" onclick="toggleManageProfiles()" class="border border-gray-400 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-600 dark:hover:border-white px-6 py-2 uppercase tracking-widest text-sm transition-colors rounded-full relative">
+                    <span id="auth-manage-text">จัดการโปรไฟล์</span>
+                </button>
+                
+                <div class="flex items-center space-x-3 text-gray-400 dark:text-gray-600">
+                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-20"></div>
+                    <span class="text-xs" id="auth-or-text">หรือ</span>
+                    <div class="h-px bg-gray-300 dark:bg-gray-700 w-20"></div>
+                </div>
+                
+                <button onclick="loginAsGuest()" class="group flex items-center space-x-2 border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500 dark:hover:border-amber-500 px-6 py-2.5 text-sm transition-all rounded-full bg-amber-50/50 dark:bg-amber-900/10 hover:bg-amber-100 dark:hover:bg-amber-900/20 relative">
+                    <i class="fas fa-eye group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium" id="auth-guest-text">เข้าชมแบบ Guest (ดูอย่างเดียว)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create Profile -->
+    <div id="profile-modal" class="fixed inset-0 bg-black/60 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 w-full max-w-md rounded-2xl shadow-2xl relative">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl"><i class="fas fa-times"></i></button>
+            <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-white" id="modal-add-profile-title">เพิ่มโปรไฟล์</h3>
+            
+            <form id="profile-form" onsubmit="submitProfile(event)" class="space-y-6">
+                <div class="flex items-center space-x-6 border-b border-gray-100 dark:border-gray-700 pb-6">
+                    <div class="flex flex-col items-center space-y-3">
+                        <div class="relative w-24 h-24 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 overflow-hidden bg-gray-100 dark:bg-gray-700 shrink-0 group cursor-pointer" onclick="randomizeAvatar()">
+                            <img id="setup-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=new" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                <i class="fas fa-sync-alt text-white text-xl mb-1"></i>
+                                <span class="text-white text-[10px] font-medium mt-1" id="text-random-avatar">คลิกเพื่อสุ่ม</span>
+                            </div>
+                        </div>
+                        <div class="flex text-xs font-medium w-full justify-center">
+                            <label class="text-gray-600 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 cursor-pointer px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-indigo-50 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors w-full text-center flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-sm relative">
+                                <i class="fas fa-upload mr-1.5"></i> <span id="text-profile-upload">อัปโหลด</span>
+                                <input type="file" id="profile-image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex-1 w-full">
+                        <input type="text" id="setup-name" required placeholder="ชื่อโปรไฟล์" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 text-lg">
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-base font-semibold mb-1 text-gray-800 dark:text-white" id="modal-security-title">การตั้งค่าความปลอดภัย (ไม่บังคับ)</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-3" id="modal-security-desc">ตั้งค่า PIN 4 หลักเพื่อป้องกันผู้อื่นเข้าใช้งานและป้องกันการลบ</p>
+                    <div class="flex items-center space-x-4">
+                        <input type="password" id="setup-pin" maxlength="4" pattern="[0-9]*" inputmode="numeric" placeholder="____" class="w-32 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 pin-input">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closeProfileModal()" class="px-5 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors" id="btn-profile-cancel">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg shadow transition-colors" id="btn-profile-save">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: PIN Entry -->
+    <div id="pin-modal" class="fixed inset-0 bg-black/80 z-[80] hidden flex flex-col items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-center w-full max-w-sm relative">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2" id="pin-modal-title">ป้อน PIN</h3>
+            <p id="pin-profile-name" class="text-gray-500 dark:text-gray-400 mb-6 font-medium">เข้าสู่ระบบ: [ชื่อ]</p>
+            
+            <form id="pin-form" onsubmit="verifyPin(event)">
+                <input type="hidden" id="pin-target-uid">
+                <input type="hidden" id="pin-action" value="login">
+                <input type="password" id="pin-entry" required maxlength="4" pattern="[0-9]*" inputmode="numeric" class="w-48 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white px-4 py-3 outline-none focus:border-indigo-500 dark:focus:border-indigo-500 pin-input mb-4 text-center mx-auto block" autofocus>
+                
+                <p id="pin-error" class="text-red-500 text-sm h-6 mb-4 opacity-0 transition-opacity">PIN ไม่ถูกต้อง กรุณาลองใหม่</p>
+                
+                <div class="flex justify-center space-x-3">
+                    <button type="button" onclick="closePinModal()" class="px-5 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-pin-cancel">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 rounded-lg" id="btn-pin-submit">ตกลง</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP STRUCTURE -->
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col hidden md:flex z-20 shadow-sm shrink-0 transition-colors">
+        <div class="p-5 flex flex-col space-y-3 border-b border-gray-100 dark:border-gray-800">
+            <div class="flex items-center space-x-3">
+                <img src="https://lh3.googleusercontent.com/d/1BmDoK8kg4vgeCayp6GB7T7SnlnWbA_3-" alt="CLU9TER Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm bg-white">
+                <h1 class="text-xl font-bold tracking-wider text-gray-800 dark:text-white">CLU9TER</h1>
+            </div>
+            <!-- Sync Status Sidebar -->
+            <div class="sync-status-indicator flex items-center space-x-1.5 text-xs font-medium px-2 py-1 rounded-md bg-gray-50 dark:bg-gray-800 w-max border border-gray-100 dark:border-gray-700">
+                 <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1" id="sync-text-sidebar">ตรวจสอบสถานะ...</span>
+            </div>
+        </div>
+        
+        <div class="p-4 flex items-center space-x-3 bg-gray-50 dark:bg-gray-800/50 my-4 mx-4 rounded-xl cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-100 dark:border-gray-700" onclick="handleLogout()" title="คลิกเพื่อเปลี่ยนโปรไฟล์">
+            <img id="current-user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=wait" class="w-10 h-10 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover">
+            <div class="overflow-hidden flex-1">
+                <p class="text-[10px] text-gray-500 dark:text-gray-400" id="current-user-role">กำลังใช้งาน</p>
+                <p id="current-user-name" class="text-sm font-semibold truncate w-full text-gray-800 dark:text-white">Loading...</p>
+            </div>
+            <i class="fas fa-exchange-alt text-gray-400 ml-auto text-xs"></i>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2">
+            <button onclick="switchTab('board')" id="nav-board" class="w-full flex items-center space-x-3 px-4 py-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-xl text-left transition-colors font-medium">
+                <i class="fas fa-tasks w-5 text-center"></i> <span id="nav-board-text">กระดานงาน</span>
+            </button>
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-left transition-colors font-medium">
+                <i class="fas fa-chart-pie w-5 text-center"></i> <span id="nav-dash-text">แดชบอร์ด</span>
+            </button>
+            <button onclick="switchTab('review')" id="nav-review" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-left transition-colors font-medium">
+                <i class="fas fa-star w-5 text-center text-amber-500"></i> <span id="nav-review-text">ประเมินเพื่อน</span>
+            </button>
+            <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl text-left transition-colors font-medium">
+                <i class="fas fa-history w-5 text-center"></i> <span id="nav-logs-text">บันทึกกิจกรรม</span>
+            </button>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-100 dark:border-gray-800">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-xl transition-colors font-medium text-sm">
+                <i class="fas fa-sign-out-alt"></i> <span id="nav-logout-text">ออกจากระบบ/เปลี่ยนคน</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile Nav -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around p-2 z-50 transition-colors">
+        <button onclick="switchTab('board')" id="nav-board-mob" class="flex flex-col items-center p-2 text-indigo-600 dark:text-indigo-400 w-1/4"><i class="fas fa-tasks text-lg"></i><span class="text-[9px] mt-1" id="nav-board-mob-text">Board</span></button>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-chart-pie text-lg"></i><span class="text-[9px] mt-1" id="nav-dash-mob-text">Dash</span></button>
+        <button onclick="switchTab('review')" id="nav-review-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-star text-lg"></i><span class="text-[9px] mt-1" id="nav-review-mob-text">Review</span></button>
+        <button onclick="switchTab('logs')" id="nav-logs-mob" class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400 w-1/4"><i class="fas fa-history text-lg"></i><span class="text-[9px] mt-1" id="nav-logs-mob-text">Logs</span></button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full bg-gray-50 dark:bg-gray-900 pb-16 md:pb-0 relative transition-colors">
+        <header class="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800 px-6 py-4 flex justify-between items-center z-10 transition-colors">
+            <div class="flex flex-col">
+                <h2 id="page-title" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">กระดานงานของทีม</h2>
+                <!-- Sync Status Mobile Only -->
+                <div class="sync-status-indicator md:hidden flex items-center space-x-1.5 text-[10px] font-medium mt-1">
+                     <i class="fas fa-circle-notch fa-spin text-gray-400"></i><span class="text-gray-500 ml-1" id="sync-text-mob">ตรวจสอบสถานะ...</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Language Toggle App -->
+                <button onclick="toggleLanguage()" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-semibold text-xs">
+                    <span id="lang-toggle-app">EN</span>
+                </button>
+                <!-- Theme Toggle App -->
+                <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+                <button id="btn-add-task" onclick="openAddTaskModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm font-medium">
+                    <i class="fas fa-plus"></i> <span class="hidden md:inline" id="header-add-task-text">เพิ่มงานใหม่</span>
+                </button>
+                <button onclick="handleLogout()" class="md:hidden text-gray-500 dark:text-gray-400 hover:text-indigo-600 w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="loading-spinner" class="absolute inset-0 bg-white/80 dark:bg-gray-900/80 z-40 flex flex-col items-center justify-center hidden backdrop-blur-sm">
+            <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-600 dark:text-indigo-400 mb-4"></i>
+            <p class="text-indigo-800 dark:text-indigo-300 font-medium" id="loading-text">กำลังโหลดข้อมูล...</p>
+        </div>
+
+        <!-- View: Board -->
+        <div id="view-board" class="flex-1 overflow-x-auto overflow-y-auto p-4 md:p-6 hidden">
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 min-w-max md:min-w-0 h-full">
+                <!-- To Do -->
+                <div class="bg-gray-100 dark:bg-gray-800/50 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-gray-200 dark:border-gray-700 h-max max-h-full">
+                    <div class="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center rounded-t-xl bg-gray-200/50 dark:bg-gray-800">
+                        <h3 class="font-semibold text-gray-700 dark:text-gray-200 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span> <span id="col-todo-title">รอดำเนินการ</span></h3>
+                        <span id="count-todo" class="bg-white dark:bg-gray-700 text-xs font-bold px-2 py-0.5 rounded-md text-gray-600 dark:text-gray-300 shadow-sm border border-gray-200 dark:border-gray-600">0</span>
+                    </div>
+                    <div id="col-todo" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                </div>
+                <!-- Doing -->
+                <div class="bg-blue-50 dark:bg-blue-900/10 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-blue-100 dark:border-blue-800/50 h-max max-h-full">
+                    <div class="p-3 border-b border-blue-100 dark:border-blue-800/50 flex justify-between items-center rounded-t-xl bg-blue-100/50 dark:bg-blue-900/20">
+                        <h3 class="font-semibold text-blue-800 dark:text-blue-300 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2"></span> <span id="col-doing-title">กำลังทำ</span></h3>
+                        <span id="count-doing" class="bg-white dark:bg-blue-900/50 text-xs font-bold px-2 py-0.5 rounded-md text-blue-600 dark:text-blue-300 shadow-sm border border-blue-100 dark:border-blue-700">0</span>
+                    </div>
+                    <div id="col-doing" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                </div>
+                <!-- Done -->
+                <div class="bg-green-50 dark:bg-green-900/10 rounded-xl w-full md:w-1/3 flex flex-col shadow-sm border border-green-100 dark:border-green-800/50 h-max max-h-full">
+                    <div class="p-3 border-b border-green-100 dark:border-green-800/50 flex justify-between items-center rounded-t-xl bg-green-100/50 dark:bg-green-900/20">
+                        <h3 class="font-semibold text-green-800 dark:text-green-300 flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-green-500 mr-2"></span> <span id="col-done-title">เสร็จสิ้น</span></h3>
+                        <span id="count-done" class="bg-white dark:bg-green-900/50 text-xs font-bold px-2 py-0.5 rounded-md text-green-600 dark:text-green-300 shadow-sm border border-green-100 dark:border-green-700">0</span>
+                    </div>
+                    <div id="col-done" class="p-3 space-y-3 flex-1 overflow-y-auto kanban-column"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Dashboard & Analytics -->
+        <div id="view-dashboard" class="hidden flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-progress">ความคืบหน้า</p>
+                        <i class="fas fa-flag-checkered text-xl md:text-2xl opacity-30"></i>
+                    </div>
+                    <h3 id="dash-progress" class="text-2xl md:text-3xl font-bold">0%</h3>
+                </div>
+                <div class="bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-700 dark:to-gray-800 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-total">งานทั้งหมด</p>
+                        <i class="fas fa-tasks text-xl md:text-2xl opacity-30"></i>
+                    </div>
+                    <h3 id="dash-total" class="text-2xl md:text-3xl font-bold">0</h3>
+                </div>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-ontime">ส่งตรงเวลา</p>
+                        <i class="fas fa-check-circle text-xl md:text-2xl opacity-30"></i>
+                    </div>
+                    <h3 id="dash-ontime" class="text-2xl md:text-3xl font-bold">0</h3>
+                </div>
+                <div class="bg-gradient-to-br from-red-500 to-red-600 p-4 md:p-5 rounded-xl shadow-lg text-white transform hover:scale-105 transition-transform">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs md:text-sm font-medium opacity-90" id="dash-title-late">ส่งล่าช้า</p>
+                        <i class="fas fa-exclamation-circle text-xl md:text-2xl opacity-30"></i>
+                    </div>
+                    <h3 id="dash-late" class="text-2xl md:text-3xl font-bold">0</h3>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-100" id="dash-perf-title">คะแนน Performance</h3>
+                        <span class="text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-full">%</span>
+                    </div>
+                    <p class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mb-4 bg-gray-50 dark:bg-gray-700/50 p-2 rounded-lg border border-gray-100 dark:border-gray-600">
+                        <i class="fas fa-info-circle mr-1"></i><span id="perf-formula-text">สูตร: ส่งตรงเวลา (40%) + ปริมาณงาน (30%) + ประเมินเพื่อน (30%)</span>
+                    </p>
+                    <div class="relative" style="height: 250px;">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                    <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-100 mb-4" id="dash-status-title">สถานะงานรวม</h3>
+                    <div class="flex items-center justify-center" style="height: 250px;">
+                        <div class="relative w-full max-w-[250px]">
+                            <canvas id="statusChart"></canvas>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400" id="dash-total-label">งานทั้งหมด</p>
+                                    <p id="total-tasks-center" class="text-2xl font-bold text-gray-800 dark:text-gray-100">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Table -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div class="p-4 md:p-5 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-200 flex items-center">
+                        <i class="fas fa-users-cog mr-2 text-indigo-600 dark:text-indigo-400"></i>
+                        <span id="dash-indiv-title">ประสิทธิภาพรายบุคคล</span>
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border-b-2 border-gray-200 dark:border-gray-600">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold" id="th-member">สมาชิก</th>
+                                <th class="py-3 px-4 text-center font-semibold" id="th-tasks">งานที่ทำ</th>
+                                <th class="py-3 px-4 text-center font-semibold" id="th-ontime">ตรงเวลา/ล่าช้า</th>
+                                <th class="py-3 px-4 text-center font-semibold" id="th-peer">คะแนนจากเพื่อน</th>
+                                <th class="py-3 px-4 text-center font-semibold text-indigo-600 dark:text-indigo-400">
+                                    <i class="fas fa-trophy mr-1"></i>Score
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="analytics-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-gray-800 dark:text-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Peer Review -->
+        <div id="view-review" class="hidden flex-1 overflow-y-auto p-4 md:p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 text-center">
+                    <div class="w-16 h-16 bg-amber-50 dark:bg-amber-900/20 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-3"><i class="fas fa-star-half-alt"></i></div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100" id="review-header-title">ประเมินเพื่อนแบบไม่ระบุตัวตน</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2" id="review-header-desc">ให้ดาวเพื่อนร่วมทีมตามความเป็นจริง ข้อมูลนี้ถูกเก็บเป็นความลับ</p>
+                </div>
+                <div id="peer-review-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+
+        <!-- View: Logs -->
+        <div id="view-logs" class="hidden flex-1 overflow-y-auto p-4 md:p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 max-w-4xl mx-auto overflow-hidden">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-200" id="logs-header-title">ประวัติการเคลื่อนไหวล่าสุด</div>
+                <div class="p-0"><ul id="log-list" class="divide-y divide-gray-100 dark:divide-gray-700"></ul></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add Task (Higher z-index to avoid mobile nav overlap) -->
+    <div id="task-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
+            <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/80">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white" id="modal-task-title">สร้างงานใหม่</h3>
+                <button type="button" onclick="closeModal('task-modal')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="task-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-title">ชื่องาน</span> *</label>
+                    <input type="text" id="task-title" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-desc">รายละเอียดงาน</label>
+                    <textarea id="task-desc" rows="2" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-assignee">ผู้รับผิดชอบ</label>
+                        <select id="task-assignee" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="">-- ไม่ระบุ --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-task-weight">น้ำหนัก (Weight)</label>
+                        <select id="task-difficulty" class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="1">ง่าย (1 pts)</option><option value="2">ปานกลาง (2 pts)</option><option value="3" selected>ยาก (3 pts)</option><option value="4">ยากมาก (4 pts)</option><option value="5">เดอะแบก (5 pts)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"><span id="label-task-duedate">กำหนดส่ง</span> *</label>
+                    <input type="datetime-local" id="task-duedate" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('task-modal')" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-task-cancel">ยกเลิก</button>
+                    <button type="submit" class="px-4 py-2 text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md font-medium" id="btn-task-save">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Done Report (ส่งงาน) -->
+    <div id="done-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
+            <div class="p-5 border-b border-green-100 dark:border-green-900/30 flex justify-between items-center bg-green-50 dark:bg-green-900/20">
+                <h3 class="text-lg font-bold text-green-800 dark:text-green-400" id="modal-done-title"><i class="fas fa-check-circle mr-2"></i>รายงานการส่งงาน</h3>
+                <button type="button" onclick="cancelDoneAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="done-form" onsubmit="submitDoneReport(event)" class="p-6 space-y-4">
+                <input type="hidden" id="done-task-id">
+                <input type="hidden" id="done-task-title">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" id="label-done-report">สิ่งที่ทำมาแล้ว / ผลลัพธ์ของงาน (บังคับ) *</label>
+                    <textarea id="done-report" required rows="4" placeholder="อธิบายว่าคุณได้ทำอะไรไปบ้างในงานชิ้นนี้..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                </div>
+                
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" onclick="cancelDoneAction()" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-done-cancel">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-md font-medium" id="btn-done-submit">ยืนยันการส่งงาน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Extension Request (ขอเลื่อนส่ง) -->
+    <div id="extend-modal" class="fixed inset-0 bg-black/60 z-[90] hidden flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative border border-gray-200 dark:border-gray-700 my-auto">
+            <div class="p-5 border-b border-amber-100 dark:border-amber-900/30 flex justify-between items-center bg-amber-50 dark:bg-amber-900/20">
+                <h3 class="text-lg font-bold text-amber-800 dark:text-amber-500" id="modal-extend-title"><i class="fas fa-calendar-plus mr-2"></i>ขอขยายเวลาการทำงาน</h3>
+                <button type="button" onclick="cancelExtendAction()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="extend-form" onsubmit="submitExtensionRequest(event)" class="p-6 space-y-4">
+                <input type="hidden" id="extend-task-id">
+                <input type="hidden" id="extend-task-title">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-date">กำหนดส่งใหม่ที่ต้องการ *</label>
+                    <input type="datetime-local" id="extend-new-date" required class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-reason">เหตุผลที่ขอเลื่อน *</label>
+                    <textarea id="extend-reason" required rows="2" placeholder="ทำไมถึงทำไม่ทัน..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-extend-progress">ความคืบหน้าปัจจุบัน (ทำอะไรไปแล้วบ้าง) *</label>
+                    <textarea id="extend-progress" required rows="2" placeholder="อธิบายงานที่ทำไปแล้ว..." class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
+                </div>
+                
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" onclick="cancelExtendAction()" class="px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg" id="btn-extend-cancel">ยกเลิก</button>
+                    <button type="submit" class="px-5 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-lg shadow-md font-medium" id="btn-extend-submit">บันทึกการขอเลื่อน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, onSnapshot, serverTimestamp, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let app, auth, db;
+        let currentUserProfile = null;
+        let isGuestMode = false;
+        let allProfiles = []; 
+        let tasks = [], logs = [], reviews = [];
+        let charts = {};
+        let isManageMode = false;
+        let currentLang = 'th'; // Default language
+        
+        // Translation Dictionary
+        const translations = {
+            th: {
+                'doc.title': 'CLU9TER - ระบบประเมินและจัดการงานกลุ่ม',
+                // Auth Screen
+                'auth.title': 'ใครกำลังใช้งานอยู่?',
+                'auth.manage': 'จัดการโปรไฟล์',
+                'auth.or': 'หรือ',
+                'auth.guest': 'เข้าชมแบบ Guest (ดูอย่างเดียว)',
+                
+                // Profile Modal
+                'profile.add': 'เพิ่มโปรไฟล์',
+                'profile.name': 'ชื่อโปรไฟล์',
+                'profile.upload': 'อัปโหลด',
+                'profile.clickRandom': 'คลิกเพื่อสุ่ม',
+                'profile.security': 'การตั้งค่าความปลอดภัย (ไม่บังคับ)',
+                'profile.securityDesc': 'ตั้งค่า PIN 4 หลักเพื่อป้องกันผู้อื่นเข้าใช้งานและป้องกันการลบ',
+                'profile.cancel': 'ยกเลิก',
+                'profile.save': 'บันทึก',
+                
+                // PIN Modal
+                'pin.enter': 'ป้อน PIN',
+                'pin.login': 'เข้าสู่ระบบ',
+                'pin.delete': 'ยืนยันการลบ',
+                'pin.wrong': 'PIN ไม่ถูกต้อง กรุณาลองใหม่',
+                'pin.ok': 'ตกลง',
+                
+                // Sidebar
+                'nav.board': 'กระดานงาน',
+                'nav.dashboard': 'แดชบอร์ด',
+                'nav.review': 'ประเมินเพื่อน',
+                'nav.logs': 'บันทึกกิจกรรม',
+                'nav.logout': 'ออกจากระบบ/เปลี่ยนคน',
+                'nav.currentUser': 'กำลังใช้งาน',
+                'nav.guestMode': 'โหมดผู้เยี่ยมชม',
+                
+                // Header
+                'header.board': 'กระดานงานของทีม',
+                'header.dashboard': 'วิเคราะห์ประสิทธิภาพ',
+                'header.review': 'ประเมินเพื่อนร่วมทีม',
+                'header.logs': 'บันทึกความเคลื่อนไหว',
+                'header.addTask': 'เพิ่มงานใหม่',
+                
+                // Dashboard
+                'dash.progress': 'ความคืบหน้า',
+                'dash.total': 'งานทั้งหมด',
+                'dash.ontime': 'ส่งตรงเวลา',
+                'dash.late': 'ส่งล่าช้า',
+                'dash.performance': 'คะแนน Performance',
+                'dash.formula': 'สูตร: ส่งตรงเวลา (40%) + ปริมาณงาน (30%) + ประเมินเพื่อน (30%)',
+                'dash.status': 'สถานะงานรวม',
+                'dash.allTasks': 'งานทั้งหมด',
+                'dash.individual': 'ประสิทธิภาพรายบุคคล',
+                'dash.member': 'สมาชิก',
+                'dash.tasksDone': 'งานที่ทำ',
+                'dash.ontimeLate': 'ตรงเวลา/ล่าช้า',
+                'dash.peerScore': 'คะแนนจากเพื่อน',
+                'dash.score': 'Score',
+                'dash.noData': 'ไม่มีข้อมูล',
+                
+                // Board
+                'board.todo': 'รอดำเนินการ',
+                'board.doing': 'กำลังทำ',
+                'board.done': 'เสร็จสิ้น',
+                'board.weight': 'Wt',
+                'board.manage': '-- จัดการ --',
+                'board.submitWork': 'Done (ส่งงาน)',
+                'board.extend': 'ขอขยายเวลา',
+                'board.due': 'ส่ง',
+                'board.ontime': 'ตรงเวลา',
+                'board.late': 'ล่าช้า',
+                'board.result': 'ผลลัพธ์',
+                'board.extended': 'เลื่อนส่ง',
+                
+                // Task Modal
+                'task.create': 'สร้างงานใหม่',
+                'task.title': 'ชื่องาน',
+                'task.desc': 'รายละเอียดงาน',
+                'task.assignee': 'ผู้รับผิดชอบ',
+                'task.none': '-- ไม่ระบุ --',
+                'task.weight': 'น้ำหนัก (Weight)',
+                'task.easy': 'ง่าย (1 pts)',
+                'task.medium': 'ปานกลาง (2 pts)',
+                'task.hard': 'ยาก (3 pts)',
+                'task.veryhard': 'ยากมาก (4 pts)',
+                'task.extreme': 'เดอะแบก (5 pts)',
+                'task.duedate': 'กำหนดส่ง',
+                'task.me': '(ฉัน)',
+                
+                // Done Modal
+                'done.title': 'รายงานการส่งงาน',
+                'done.report': 'สิ่งที่ทำมาแล้ว / ผลลัพธ์ของงาน (บังคับ) *',
+                'done.reportPlaceholder': 'อธิบายว่าคุณได้ทำอะไรไปบ้างในงานชิ้นนี้...',
+                'done.submit': 'ยืนยันการส่งงาน',
+                
+                // Extend Modal
+                'extend.title': 'ขอขยายเวลาการทำงาน',
+                'extend.newDate': 'กำหนดส่งใหม่ที่ต้องการ *',
+                'extend.reason': 'เหตุผลที่ขอเลื่อน *',
+                'extend.reasonPlaceholder': 'ทำไมถึงทำไม่ทัน...',
+                'extend.progress': 'ความคืบหน้าปัจจุบัน (ทำอะไรไปแล้วบ้าง) *',
+                'extend.progressPlaceholder': 'อธิบายงานที่ทำไปแล้ว...',
+                'extend.submit': 'บันทึกการขอเลื่อน',
+                
+                // Review
+                'review.title': 'ประเมินเพื่อนแบบไม่ระบุตัวตน',
+                'review.desc': 'ให้ดาวเพื่อนร่วมทีมตามความเป็นจริง ข้อมูลนี้ถูกเก็บเป็นความลับ',
+                'review.notRated': 'ยังไม่ได้ประเมิน',
+                'review.rated': 'คุณให้',
+                'review.stars': 'ดาว',
+                'review.guestMsg': 'โหมดผู้เยี่ยมชมไม่สามารถประเมินเพื่อนได้',
+                'review.guestDesc': 'กรุณาเข้าสู่ระบบด้วยโปรไฟล์เพื่อใช้ฟีเจอร์นี้',
+                'review.noMembers': 'ไม่มีสมาชิกอื่นในกลุ่ม',
+                
+                // Logs
+                'logs.title': 'ประวัติการเคลื่อนไหวล่าสุด',
+                'logs.noActivity': 'ยังไม่มีบันทึกกิจกรรม',
+                
+                // Sync Status
+                'sync.checking': 'ตรวจสอบสถานะ...',
+                'sync.online': 'ออนไลน์',
+                'sync.offline': 'ออฟไลน์',
+                'sync.syncing': 'กำลังซิงค์...',
+                
+                // Toast Messages
+                'toast.guestNoEdit': 'โหมดผู้เยี่ยมชมไม่สามารถแก้ไขข้อมูลได้',
+                'toast.guestNoAdd': 'โหมดผู้เยี่ยมชมไม่สามารถเพิ่มงานได้',
+                'toast.guestNoRate': 'โหมดผู้เยี่ยมชมไม่สามารถให้คะแนนได้',
+                'toast.guestMode': 'เข้าสู่โหมดผู้เยี่ยมชม (ดูข้อมูลอย่างเดียว)',
+                'toast.taskAdded': 'เพิ่มงานสำเร็จ',
+                'toast.statusUpdated': 'อัปเดตสถานะสำเร็จ',
+                'toast.rated': 'ให้ {stars} ดาว เรียบร้อยแล้ว',
+                'toast.loading': 'กำลังโหลดข้อมูล...',
+                'toast.profileCreated': 'สร้างโปรไฟล์สำเร็จ',
+                'toast.profileDeleted': 'ลบโปรไฟล์สำเร็จ',
+                'toast.profileError': 'เกิดข้อผิดพลาดในการสร้างโปรไฟล์',
+                'toast.deleteError': 'ลบโปรไฟล์ล้มเหลว',
+                'toast.saveError': 'ไม่สามารถบันทึกได้',
+                'toast.updateError': 'ไม่สามารถอัปเดตได้',
+                'toast.ratingError': 'เกิดข้อผิดพลาดในการให้คะแนน',
+                'toast.doneSuccess': 'บันทึกการส่งงานสำเร็จ',
+                'toast.extendSuccess': 'บันทึกการขอเลื่อนเวลาสำเร็จ',
+                'confirm.deleteProfile': 'คุณแน่ใจหรือไม่ว่าต้องการลบโปรไฟล์ "{name}"?\n(การกระทำนี้ไม่สามารถกู้คืนได้)',
+            },
+            en: {
+                'doc.title': 'CLU9TER - Team Task Management',
+                // Auth Screen
+                'auth.title': 'Who\'s using?',
+                'auth.manage': 'Manage Profiles',
+                'auth.or': 'or',
+                'auth.guest': 'Enter as Guest (View Only)',
+                
+                // Profile Modal
+                'profile.add': 'Add Profile',
+                'profile.name': 'Profile Name',
+                'profile.upload': 'Upload',
+                'profile.clickRandom': 'Click to randomize',
+                'profile.security': 'Security Settings (Optional)',
+                'profile.securityDesc': 'Set a 4-digit PIN to protect access and prevent deletion',
+                'profile.cancel': 'Cancel',
+                'profile.save': 'Save',
+                
+                // PIN Modal
+                'pin.enter': 'Enter PIN',
+                'pin.login': 'Login',
+                'pin.delete': 'Confirm Delete',
+                'pin.wrong': 'Incorrect PIN. Please try again',
+                'pin.ok': 'OK',
+                
+                // Sidebar
+                'nav.board': 'Board',
+                'nav.dashboard': 'Dashboard',
+                'nav.review': 'Peer Review',
+                'nav.logs': 'Activity Logs',
+                'nav.logout': 'Logout/Switch User',
+                'nav.currentUser': 'Current User',
+                'nav.guestMode': 'Guest Mode',
+                
+                // Header
+                'header.board': 'Team Task Board',
+                'header.dashboard': 'Performance Analytics',
+                'header.review': 'Peer Review',
+                'header.logs': 'Activity History',
+                'header.addTask': 'Add New Task',
+                
+                // Dashboard
+                'dash.progress': 'Progress',
+                'dash.total': 'Total Tasks',
+                'dash.ontime': 'On Time',
+                'dash.late': 'Late',
+                'dash.performance': 'Performance Score',
+                'dash.formula': 'Formula: On Time (40%) + Workload (30%) + Peer Review (30%)',
+                'dash.status': 'Overall Status',
+                'dash.allTasks': 'All Tasks',
+                'dash.individual': 'Individual Performance',
+                'dash.member': 'Member',
+                'dash.tasksDone': 'Tasks Done',
+                'dash.ontimeLate': 'On Time/Late',
+                'dash.peerScore': 'Peer Score',
+                'dash.score': 'Score',
+                'dash.noData': 'No data',
+                
+                // Board
+                'board.todo': 'To Do',
+                'board.doing': 'In Progress',
+                'board.done': 'Completed',
+                'board.weight': 'Wt',
+                'board.manage': '-- Manage --',
+                'board.submitWork': 'Done (Submit)',
+                'board.extend': 'Request Extension',
+                'board.due': 'Due',
+                'board.ontime': 'On Time',
+                'board.late': 'Late',
+                'board.result': 'Result',
+                'board.extended': 'Extended',
+                
+                // Task Modal
+                'task.create': 'Create New Task',
+                'task.title': 'Task Title',
+                'task.desc': 'Task Description',
+                'task.assignee': 'Assignee',
+                'task.none': '-- None --',
+                'task.weight': 'Weight',
+                'task.easy': 'Easy (1 pts)',
+                'task.medium': 'Medium (2 pts)',
+                'task.hard': 'Hard (3 pts)',
+                'task.veryhard': 'Very Hard (4 pts)',
+                'task.extreme': 'Extreme (5 pts)',
+                'task.duedate': 'Due Date',
+                'task.me': '(Me)',
+                
+                // Done Modal
+                'done.title': 'Work Submission Report',
+                'done.report': 'What you\'ve done / Work results (Required) *',
+                'done.reportPlaceholder': 'Describe what you have accomplished in this task...',
+                'done.submit': 'Confirm Submission',
+                
+                // Extend Modal
+                'extend.title': 'Request Time Extension',
+                'extend.newDate': 'New Due Date *',
+                'extend.reason': 'Reason for Extension *',
+                'extend.reasonPlaceholder': 'Why do you need more time...',
+                'extend.progress': 'Current Progress (What have you done) *',
+                'extend.progressPlaceholder': 'Describe the work you\'ve completed...',
+                'extend.submit': 'Submit Extension Request',
+                
+                // Review
+                'review.title': 'Anonymous Peer Review',
+                'review.desc': 'Rate your teammates honestly. This information is kept confidential',
+                'review.notRated': 'Not rated yet',
+                'review.rated': 'You gave',
+                'review.stars': 'stars',
+                'review.guestMsg': 'Guest mode cannot rate peers',
+                'review.guestDesc': 'Please login with a profile to use this feature',
+                'review.noMembers': 'No other members in the group',
+                
+                // Logs
+                'logs.title': 'Recent Activity History',
+                'logs.noActivity': 'No activity logs yet',
+                
+                // Sync Status
+                'sync.checking': 'Checking status...',
+                'sync.online': 'Online',
+                'sync.offline': 'Offline',
+                'sync.syncing': 'Syncing...',
+                
+                // Toast Messages
+                'toast.guestNoEdit': 'Guest mode cannot edit data',
+                'toast.guestNoAdd': 'Guest mode cannot add tasks',
+                'toast.guestNoRate': 'Guest mode cannot rate peers',
+                'toast.guestMode': 'Entered guest mode (view only)',
+                'toast.taskAdded': 'Task added successfully',
+                'toast.statusUpdated': 'Status updated successfully',
+                'toast.rated': 'Rated {stars} stars successfully',
+                'toast.loading': 'Loading data...',
+                'toast.profileCreated': 'Profile created successfully',
+                'toast.profileDeleted': 'Profile deleted successfully',
+                'toast.profileError': 'Failed to create profile',
+                'toast.deleteError': 'Failed to delete profile',
+                'toast.saveError': 'Failed to save',
+                'toast.updateError': 'Failed to update',
+                'toast.ratingError': 'Failed to rate',
+                'toast.doneSuccess': 'Work submission saved successfully',
+                'toast.extendSuccess': 'Extension request saved successfully',
+                'confirm.deleteProfile': 'Are you sure you want to delete profile "{name}"?\n(This action cannot be undone)',
+            }
+        };
+        
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+        
+        const safeSetText = (id, key) => { const el = document.getElementById(id); if (el) el.textContent = t(key); };
+        const safeSetHtml = (id, htmlContent) => { const el = document.getElementById(id); if (el) el.innerHTML = htmlContent; };
+        
+        window.toggleLanguage = function() {
+            currentLang = currentLang === 'th' ? 'en' : 'th';
+            localStorage.setItem('language', currentLang);
+            updateLanguageUI();
+            
+            // Re-render current view
+            if(currentUserProfile) {
+                renderBoard();
+                renderPeerReview();
+                updateDashboard();
+                renderLogs();
+            } else {
+                renderProfileSelection();
+            }
+        }
+        
+        function updateLanguageUI() {
+            // Document Title
+            document.title = t('doc.title');
+
+            // Update language toggle buttons
+            const langToggles = document.querySelectorAll('#lang-toggle-auth, #lang-toggle-app');
+            langToggles.forEach(btn => {
+                btn.textContent = currentLang === 'th' ? 'EN' : 'TH';
+            });
+            
+            // Re-run sync UI to translate it
+            updateSyncUI(navigator.onLine ? 'online' : 'offline');
+
+            // Auth Screen texts
+            safeSetText('profile-select-title', 'auth.title');
+            const manageBtnText = document.getElementById('auth-manage-text');
+            if(manageBtnText && !isManageMode) manageBtnText.textContent = t('auth.manage');
+            safeSetText('auth-or-text', 'auth.or');
+            safeSetText('auth-guest-text', 'auth.guest');
+            safeSetText('auth-loading-text', 'toast.loading');
+
+            // Navigation texts (Sidebar & Mobile)
+            safeSetText('nav-board-text', 'nav.board');
+            safeSetText('nav-dash-text', 'nav.dashboard');
+            safeSetText('nav-review-text', 'nav.review');
+            safeSetText('nav-logs-text', 'nav.logs');
+            safeSetText('nav-logout-text', 'nav.logout');
+            
+            safeSetText('nav-board-mob-text', 'nav.board');
+            safeSetText('nav-dash-mob-text', 'nav.dashboard');
+            safeSetText('nav-review-mob-text', 'nav.review');
+            safeSetText('nav-logs-mob-text', 'nav.logs');
+
+            // Header elements
+            safeSetText('header-add-task-text', 'header.addTask');
+            safeSetText('loading-text', 'toast.loading');
+
+            // Dashboard texts
+            safeSetText('dash-title-progress', 'dash.progress');
+            safeSetText('dash-title-total', 'dash.total');
+            safeSetText('dash-title-ontime', 'dash.ontime');
+            safeSetText('dash-title-late', 'dash.late');
+            safeSetText('dash-perf-title', 'dash.performance');
+            safeSetText('perf-formula-text', 'dash.formula');
+            safeSetText('dash-status-title', 'dash.status');
+            safeSetText('dash-total-label', 'dash.allTasks');
+            safeSetText('dash-indiv-title', 'dash.individual');
+            safeSetText('th-member', 'dash.member');
+            safeSetText('th-tasks', 'dash.tasksDone');
+            safeSetText('th-ontime', 'dash.ontimeLate');
+            safeSetText('th-peer', 'dash.peerScore');
+
+            // Columns headers in Board
+            safeSetText('col-todo-title', 'board.todo');
+            safeSetText('col-doing-title', 'board.doing');
+            safeSetText('col-done-title', 'board.done');
+
+            // Peer Review Header
+            safeSetText('review-header-title', 'review.title');
+            safeSetText('review-header-desc', 'review.desc');
+
+            // Logs Header
+            safeSetText('logs-header-title', 'logs.title');
+
+            // Update page title based on current tab
+            const currentTab = document.querySelector('[id^="view-"]:not(.hidden)')?.id.replace('view-', '');
+            if(currentTab) {
+                const titles = {
+                    'board': t('header.board'),
+                    'dashboard': t('header.dashboard'),
+                    'review': t('header.review'),
+                    'logs': t('header.logs')
+                };
+                document.getElementById('page-title').textContent = titles[currentTab] || '';
+            }
+            
+            // Update current user role
+            const roleEl = document.getElementById('current-user-role');
+            if(roleEl && !isGuestMode) {
+                roleEl.textContent = t('nav.currentUser');
+            } else if(roleEl && isGuestMode) {
+                roleEl.innerHTML = `<i class="fas fa-eye text-amber-500 mr-1"></i>${t('nav.guestMode')}`;
+            }
+            
+            // Update modals
+            updateModalLanguage();
+        }
+        
+        function updateModalLanguage() {
+            // Profile Modal
+            safeSetText('modal-add-profile-title', 'profile.add');
+            safeSetText('text-random-avatar', 'profile.clickRandom');
+            safeSetText('text-profile-upload', 'profile.upload');
+            safeSetText('modal-security-title', 'profile.security');
+            safeSetText('modal-security-desc', 'profile.securityDesc');
+            safeSetText('btn-profile-cancel', 'profile.cancel');
+            
+            const profileSubmitBtn = document.getElementById('btn-profile-save');
+            if(profileSubmitBtn && !profileSubmitBtn.disabled) profileSubmitBtn.textContent = t('profile.save');
+            
+            const setupName = document.getElementById('setup-name');
+            if(setupName) setupName.placeholder = t('profile.name');
+            
+            // Task Modal
+            safeSetText('modal-task-title', 'task.create');
+            safeSetText('label-task-title', 'task.title');
+            safeSetText('label-task-desc', 'task.desc');
+            safeSetText('label-task-assignee', 'task.assignee');
+            safeSetText('label-task-weight', 'task.weight');
+            safeSetText('label-task-duedate', 'task.duedate');
+            safeSetText('btn-task-cancel', 'profile.cancel');
+
+            const taskTitle = document.getElementById('task-title');
+            if(taskTitle) taskTitle.placeholder = t('task.title');
+            const taskDesc = document.getElementById('task-desc');
+            if(taskDesc) taskDesc.placeholder = t('task.desc');
+
+            const taskSubmitBtn = document.getElementById('btn-task-save');
+            if(taskSubmitBtn && !taskSubmitBtn.disabled) taskSubmitBtn.textContent = t('profile.save');
+            
+            // Update task difficulty options
+            const taskDifficulty = document.getElementById('task-difficulty');
+            if(taskDifficulty) {
+                const currentVal = taskDifficulty.value;
+                taskDifficulty.innerHTML = `
+                    <option value="1" ${currentVal==='1'?'selected':''}>${t('task.easy')}</option>
+                    <option value="2" ${currentVal==='2'?'selected':''}>${t('task.medium')}</option>
+                    <option value="3" ${currentVal==='3'?'selected':''}>${t('task.hard')}</option>
+                    <option value="4" ${currentVal==='4'?'selected':''}>${t('task.veryhard')}</option>
+                    <option value="5" ${currentVal==='5'?'selected':''}>${t('task.extreme')}</option>
+                `;
+            }
+            
+            // Done Modal
+            const doneModalTitle = document.getElementById('modal-done-title');
+            if(doneModalTitle) doneModalTitle.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${t('done.title')}`;
+            safeSetText('label-done-report', 'done.report');
+            safeSetText('btn-done-cancel', 'profile.cancel');
+            safeSetText('btn-done-submit', 'done.submit');
+            const doneReport = document.getElementById('done-report');
+            if(doneReport) doneReport.placeholder = t('done.reportPlaceholder');
+            
+            // Extend Modal
+            const extendModalTitle = document.getElementById('modal-extend-title');
+            if(extendModalTitle) extendModalTitle.innerHTML = `<i class="fas fa-calendar-plus mr-2"></i>${t('extend.title')}`;
+            safeSetText('label-extend-date', 'extend.newDate');
+            safeSetText('label-extend-reason', 'extend.reason');
+            safeSetText('label-extend-progress', 'extend.progress');
+            safeSetText('btn-extend-cancel', 'profile.cancel');
+            safeSetText('btn-extend-submit', 'extend.submit');
+
+            const extendReason = document.getElementById('extend-reason');
+            if(extendReason) extendReason.placeholder = t('extend.reasonPlaceholder');
+            const extendProgress = document.getElementById('extend-progress');
+            if(extendProgress) extendProgress.placeholder = t('extend.progressPlaceholder');
+            
+            // PIN Modal
+            safeSetText('pin-modal-title', 'pin.enter');
+            safeSetText('btn-pin-cancel', 'profile.cancel');
+            safeSetText('btn-pin-submit', 'pin.ok');
+            const pinError = document.getElementById('pin-error');
+            if(pinError) pinError.textContent = t('pin.wrong');
+        }
+        
+        function initLanguage() {
+            const savedLang = localStorage.getItem('language');
+            if(savedLang && (savedLang === 'th' || savedLang === 'en')) {
+                currentLang = savedLang;
+            }
+            updateLanguageUI();
+        }
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-clu9ter';
+        
+        // Firebase Configuration
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyCIAgKj_iKICO4CLnCQa0uLkRjKq1BQ23Q",
+            authDomain: "clu9ter.firebaseapp.com",
+            projectId: "clu9ter",
+            storageBucket: "clu9ter.firebasestorage.app",
+            messagingSenderId: "649793697995",
+            appId: "1:649793697995:web:c92e719d43d49cdbe6034e",
+            measurementId: "G-W7FXJ4BEJ0"
+        };
+        
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        const tasksPath = ['artifacts', appId, 'public', 'data', 'tasks'];
+        const usersPath = ['artifacts', appId, 'public', 'data', 'profiles']; 
+        const logsPath  = ['artifacts', appId, 'public', 'data', 'logs'];
+        const reviewsPath = ['artifacts', appId, 'public', 'data', 'reviews'];
+
+        // --- THEME TOGGLE LOGIC ---
+        window.toggleTheme = function() {
+            const htmlClass = document.documentElement.classList;
+            if (htmlClass.contains('dark')) {
+                htmlClass.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlClass.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateChartColors();
+        }
+
+        function initTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        initTheme();
+        initLanguage();
+
+        // --- SYNC STATUS LOGIC ---
+        function updateSyncUI(status) {
+            const spans = [document.getElementById('sync-text-auth'), document.getElementById('sync-text-sidebar'), document.getElementById('sync-text-mob')];
+            spans.forEach(span => {
+                if(!span) return;
+                const parent = span.parentElement;
+                if (status === 'online') {
+                    parent.innerHTML = `<i class="fas fa-check-circle text-green-500"></i><span class="text-green-600 dark:text-green-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.online')}</span>`;
+                } else if (status === 'offline') {
+                    parent.innerHTML = `<i class="fas fa-times-circle text-red-500"></i><span class="text-red-600 dark:text-red-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.offline')}</span>`;
+                } else if (status === 'syncing') {
+                    parent.innerHTML = `<i class="fas fa-sync fa-spin text-blue-500"></i><span class="text-blue-600 dark:text-blue-400 ml-1 text-[10px] md:text-xs" id="${span.id}">${t('sync.syncing')}</span>`;
+                }
+            });
+        }
+        
+        window.addEventListener('online', () => updateSyncUI('online'));
+        window.addEventListener('offline', () => updateSyncUI('offline'));
+
+        // Wrapper for database actions to show sync status
+        async function runWithSyncStatus(promise) {
+            updateSyncUI('syncing');
+            try {
+                const result = await promise;
+                updateSyncUI(navigator.onLine ? 'online' : 'offline');
+                return result;
+            } catch (error) {
+                updateSyncUI(navigator.onLine ? 'online' : 'offline');
+                throw error;
+            }
+        }
+
+        if (!firebaseConfig) {
+            showToast("ไม่พบการตั้งค่าฐานข้อมูล", "error");
+        } else {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                initSystem();
+            } catch(error) {
+                console.error("Firebase initialization error:", error);
+                showToast("ไม่สามารถเชื่อมต่อฐานข้อมูลได้", "error");
+            }
+        }
+
+        async function initSystem() {
+            try {
+                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken);
+                else await signInAnonymously(auth);
+            } catch(e) {
+                console.error("Auth error", e);
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    updateSyncUI(navigator.onLine ? 'online' : 'offline');
+                    listenToProfiles();
+                } else {
+                    showToast("ไม่สามารถเข้าถึงระบบได้", "error");
+                }
+            });
+        }
+
+        // --- PROFILE UPLOAD IMAGE LOGIC ---
+        document.getElementById('profile-image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_SIZE = 150; // Resize to reduce base64 length
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // Maintain aspect ratio
+                    if (width > height) {
+                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else {
+                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Set as base64
+                    document.getElementById('setup-avatar').src = canvas.toDataURL('image/jpeg', 0.8);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        // --- PROFILE LOGIC ---
+        function listenToProfiles() {
+            onSnapshot(collection(db, ...usersPath), (snapshot) => {
+                allProfiles = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+                if (!currentUserProfile && !isGuestMode) renderProfileSelection();
+                else if (currentUserProfile && !isGuestMode) {
+                    const me = allProfiles.find(p => p.uid === currentUserProfile.uid);
+                    if(me) {
+                        currentUserProfile = me;
+                        updateUserUI(); renderAssigneeDropdown(); renderPeerReview(); updateDashboard();
+                    } else {
+                        // User was deleted
+                        handleLogout();
+                    }
+                } else if (isGuestMode) {
+                    // Guests still need dropdowns updated
+                    renderAssigneeDropdown(); renderPeerReview(); updateDashboard();
+                }
+            }, e => console.error(e));
+        }
+
+        window.toggleManageProfiles = function() {
+            isManageMode = !isManageMode;
+            const btnText = document.getElementById('auth-manage-text');
+            const btn = document.getElementById('btn-manage-profiles');
+            if(isManageMode) {
+                if(btnText) btnText.textContent = currentLang === 'th' ? 'เสร็จสิ้น' : 'Done';
+                btn.classList.add('bg-white', 'text-black', 'border-black');
+            } else {
+                if(btnText) btnText.textContent = t('auth.manage');
+                btn.classList.remove('bg-white', 'text-black', 'border-black');
+            }
+            renderProfileSelection();
+        }
+
+        function renderProfileSelection() {
+            if(currentUserProfile) return;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('view-board').classList.add('hidden');
+            
+            const container = document.getElementById('profiles-container');
+            container.innerHTML = '';
+
+            allProfiles.forEach(profile => {
+                const isLocked = profile.pin && profile.pin.length === 4;
+                const lockIcon = isLocked ? `<i class="fas fa-lock text-gray-400 absolute bottom-1 right-2 text-sm drop-shadow-md"></i>` : '';
+                
+                let overlay = '';
+                let cardClass = 'profile-card';
+                let onclickAction = `selectProfile('${profile.uid}')`;
+
+                if(isManageMode) {
+                    cardClass = 'cursor-pointer manage-shake';
+                    onclickAction = `confirmDeleteProfile('${profile.uid}', '${profile.name.replace(/'/g, "\\'")}')`;
+                    overlay = `
+                        <div class="absolute inset-0 bg-black/60 rounded-xl flex flex-col items-center justify-center z-10 transition-opacity pointer-events-none">
+                            <i class="fas fa-trash-alt text-red-500 text-3xl mb-1"></i>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML += `
+                    <div class="${cardClass} flex flex-col items-center relative w-24 md:w-32" onclick="${onclickAction}">
+                        <div class="relative w-24 h-24 md:w-32 md:h-32 mb-3">
+                            <img src="${profile.avatar}" class="w-full h-full rounded-xl border-2 border-transparent bg-gray-200 dark:bg-gray-800 transition-colors shadow-md object-cover">
+                            ${lockIcon}
+                            ${overlay}
+                        </div>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-sm md:text-base font-medium truncate w-full text-center px-1">${profile.name}</span>
+                    </div>
+                `;
+            });
+
+            if(!isManageMode) {
+                container.innerHTML += `
+                    <div class="profile-card flex flex-col items-center group relative w-24 md:w-32" onclick="openProfileModal()">
+                        <div class="w-24 h-24 md:w-32 md:h-32 mb-3 border-2 border-gray-300 dark:border-gray-600 text-gray-400 rounded-xl flex items-center justify-center text-4xl transition-colors bg-white dark:bg-gray-800 shadow-sm">
+                            <i class="fas fa-plus group-hover:text-indigo-500 transition-colors"></i>
+                        </div>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-sm md:text-base font-medium truncate px-1">${t('profile.add')}</span>
+                    </div>
+                `;
+            }
+        }
+
+        window.confirmDeleteProfile = function(uid, name) {
+            const profile = allProfiles.find(p => p.uid === uid);
+            if(profile && profile.pin && profile.pin.length === 4) {
+                // Requires PIN to delete
+                document.getElementById('pin-target-uid').value = uid;
+                document.getElementById('pin-action').value = 'delete';
+                document.getElementById('pin-profile-name').textContent = `${t('pin.delete')}: ${profile.name}`;
+                document.getElementById('pin-entry').value = '';
+                document.getElementById('pin-error').classList.add('opacity-0');
+                document.getElementById('pin-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('pin-entry').focus(), 100);
+            } else {
+                // No PIN, simple confirm
+                const confirmMsg = t('confirm.deleteProfile').replace('{name}', name);
+                if(confirm(confirmMsg)) {
+                    performDeleteProfile(uid);
+                }
+            }
+        }
+
+        async function performDeleteProfile(uid) {
+            try {
+                await runWithSyncStatus(deleteDoc(doc(db, ...usersPath, uid)));
+                showToast(t('toast.profileDeleted'));
+            } catch(e) { 
+                showToast(t('toast.deleteError'), "error"); 
+            }
+        }
+
+        window.openProfileModal = function() {
+            document.getElementById('profile-form').reset();
+            randomizeAvatar();
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+        window.closeProfileModal = function() { document.getElementById('profile-modal').classList.add('hidden'); }
+        window.randomizeAvatar = function() { document.getElementById('setup-avatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random()}`; }
+
+        window.submitProfile = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-profile-save');
+            btn.disabled = true; btn.textContent = '...';
+            
+            const newUid = 'prof_' + Date.now();
+            try {
+                await runWithSyncStatus(setDoc(doc(db, ...usersPath, newUid), {
+                    uid: newUid,
+                    name: document.getElementById('setup-name').value,
+                    avatar: document.getElementById('setup-avatar').src,
+                    pin: document.getElementById('setup-pin').value,
+                    createdAt: serverTimestamp()
+                }));
+                closeProfileModal();
+                showToast(t('toast.profileCreated'));
+            } catch(err) { 
+                showToast(t('toast.profileError'), "error"); 
+            } 
+            finally { btn.disabled = false; btn.textContent = t('profile.save'); }
+        }
+
+        window.selectProfile = function(uid) {
+            const profile = allProfiles.find(p => p.uid === uid);
+            if(!profile) return;
+
+            if (profile.pin && profile.pin.length === 4) {
+                document.getElementById('pin-target-uid').value = uid;
+                document.getElementById('pin-action').value = 'login';
+                document.getElementById('pin-profile-name').textContent = `${t('pin.login')}: ${profile.name}`;
+                document.getElementById('pin-entry').value = '';
+                document.getElementById('pin-error').classList.add('opacity-0');
+                document.getElementById('pin-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('pin-entry').focus(), 100);
+            } else {
+                loginAsProfile(profile);
+            }
+        }
+
+        window.closePinModal = function() { document.getElementById('pin-modal').classList.add('hidden'); }
+        
+        // Updated Verify PIN to handle both Login and Delete actions
+        window.verifyPin = function(e) {
+            e.preventDefault();
+            const uid = document.getElementById('pin-target-uid').value;
+            const action = document.getElementById('pin-action').value;
+            const profile = allProfiles.find(p => p.uid === uid);
+            
+            if (profile && profile.pin === document.getElementById('pin-entry').value) {
+                closePinModal(); 
+                if (action === 'delete') {
+                    performDeleteProfile(uid);
+                } else {
+                    loginAsProfile(profile);
+                }
+            } else {
+                document.getElementById('pin-error').classList.remove('opacity-0');
+                document.getElementById('pin-entry').value = ''; 
+                document.getElementById('pin-entry').focus();
+            }
+        }
+
+        function loginAsProfile(profile) {
+            isGuestMode = false;
+            currentUserProfile = profile;
+            document.getElementById('auth-screen').classList.add('hidden');
+            setupAppListeners();
+            switchTab('board');
+            
+            // Enable all actions for regular users
+            const addTaskBtn = document.querySelector('#btn-add-task');
+            if(addTaskBtn) addTaskBtn.style.display = 'flex';
+            
+            const roleEl = document.getElementById('current-user-role');
+            if(roleEl) roleEl.textContent = t('nav.currentUser');
+
+            // Reset navigation UI
+            ['board', 'dashboard', 'review', 'logs'].forEach(t => {
+                document.getElementById(`nav-${t}`).classList.remove('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
+                document.getElementById(`nav-${t}`).classList.add('text-gray-600', 'dark:text-gray-400');
+                document.getElementById(`nav-${t}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                document.getElementById(`nav-${t}-mob`).classList.add('text-gray-500', 'dark:text-gray-400');
+            });
+            document.getElementById('nav-board').classList.add('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
+            document.getElementById('nav-board-mob').classList.add('text-indigo-600', 'dark:text-indigo-400');
+        }
+        
+        window.loginAsGuest = function() {
+            isGuestMode = true;
+            currentUserProfile = {
+                uid: 'guest_' + Date.now(),
+                name: currentLang === 'th' ? 'ผู้เยี่ยมชม' : 'Guest',
+                avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=guest',
+                isGuest: true
+            };
+            
+            document.getElementById('auth-screen').classList.add('hidden');
+            setupAppListeners();
+            switchTab('dashboard');
+            
+            // Hide add task button for guests
+            const addTaskBtn = document.querySelector('#btn-add-task');
+            if(addTaskBtn) addTaskBtn.style.display = 'none';
+            
+            // Update user role display
+            const roleEl = document.getElementById('current-user-role');
+            if(roleEl) roleEl.innerHTML = `<i class="fas fa-eye text-amber-500 mr-1"></i>${t('nav.guestMode')}`;
+            
+            showToast(t('toast.guestMode'), "success");
+        }
+
+        window.handleLogout = function() {
+            currentUserProfile = null;
+            isGuestMode = false;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            ['board', 'dashboard', 'review', 'logs'].forEach(tab => document.getElementById(`view-${tab}`).classList.add('hidden'));
+            
+            isManageMode = false;
+            const btnText = document.getElementById('auth-manage-text');
+            const btn = document.getElementById('btn-manage-profiles');
+            if(btnText) btnText.textContent = t('auth.manage');
+            if(btn) btn.classList.remove('bg-white', 'text-black', 'border-black');
+            
+            // Reset UI
+            const addTaskBtn = document.querySelector('#btn-add-task');
+            if(addTaskBtn) addTaskBtn.style.display = 'flex';
+            const roleEl = document.getElementById('current-user-role');
+            if(roleEl) roleEl.textContent = t('nav.currentUser');
+            
+            renderProfileSelection();
+        }
+
+        // --- APP DATA LISTENERS ---
+        let appListenersAttached = false;
+        function setupAppListeners() {
+            updateUserUI(); renderAssigneeDropdown();
+            if(appListenersAttached) { renderBoard(); renderPeerReview(); updateDashboard(); return; }
+
+            document.getElementById('loading-spinner').classList.remove('hidden');
+
+            onSnapshot(collection(db, ...tasksPath), (snapshot) => {
+                tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if(currentUserProfile) { 
+                    renderBoard(); 
+                    try { updateDashboard(); } catch(err) { console.error("Chart error", err); }
+                }
+                document.getElementById('loading-spinner').classList.add('hidden');
+            }, e => {
+                console.error(e);
+                document.getElementById('loading-spinner').classList.add('hidden');
+            });
+
+            onSnapshot(collection(db, ...logsPath), (snapshot) => {
+                logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0)); 
+                if(currentUserProfile) renderLogs();
+            }, e => console.error(e));
+
+            onSnapshot(collection(db, ...reviewsPath), (snapshot) => {
+                reviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if(currentUserProfile) { 
+                    renderPeerReview(); 
+                    try { updateDashboard(); } catch(err) { console.error("Chart error", err); }
+                }
+            }, e => console.error(e));
+
+            appListenersAttached = true;
+        }
+
+        function updateUserUI() {
+            if(!currentUserProfile) return;
+            const nameEl = document.getElementById('current-user-name');
+            const avatarEl = document.getElementById('current-user-avatar');
+            if(nameEl) nameEl.textContent = currentUserProfile.name;
+            if(avatarEl) avatarEl.src = currentUserProfile.avatar;
+        }
+
+        function renderAssigneeDropdown() {
+            const select = document.getElementById('task-assignee');
+            if(!select) return;
+            select.innerHTML = `<option value="">${t('task.none')}</option>`;
+            allProfiles.forEach(u => {
+                const meLabel = currentUserProfile && u.uid === currentUserProfile.uid && !isGuestMode ? ` ${t('task.me')}` : '';
+                select.innerHTML += `<option value="${u.uid}">${u.name}${meLabel}</option>`;
+            });
+        }
+
+        window.switchTab = function(tabName) {
+            ['board', 'dashboard', 'review', 'logs'].forEach(tab => {
+                document.getElementById(`view-${tab}`).classList.add('hidden');
+                document.getElementById(`nav-${tab}`).classList.remove('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
+                document.getElementById(`nav-${tab}`).classList.add('text-gray-600', 'dark:text-gray-400');
+                document.getElementById(`nav-${tab}-mob`).classList.remove('text-indigo-600', 'dark:text-indigo-400');
+                document.getElementById(`nav-${tab}-mob`).classList.add('text-gray-500', 'dark:text-gray-400');
+            });
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).classList.add('bg-indigo-50', 'dark:bg-indigo-900/30', 'text-indigo-700', 'dark:text-indigo-300');
+            document.getElementById(`nav-${tabName}-mob`).classList.add('text-indigo-600', 'dark:text-indigo-400');
+
+            const titles = { 
+                'board': t('header.board'), 
+                'dashboard': t('header.dashboard'), 
+                'review': t('header.review'), 
+                'logs': t('header.logs') 
+            };
+            document.getElementById('page-title').textContent = titles[tabName];
+            if(tabName === 'dashboard') {
+                try { updateDashboard(); } catch(e) { console.error("Failed to load dashboard charts", e); }
+            }
+        }
+
+        window.openAddTaskModal = function() {
+            if (isGuestMode) {
+                showToast(t('toast.guestNoAdd'), "error");
+                return;
+            }
+            document.getElementById('task-form').reset();
+            const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setMinutes(tomorrow.getMinutes() - tomorrow.getTimezoneOffset());
+            document.getElementById('task-duedate').value = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
+
+        document.getElementById('task-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUserProfile) return;
+            const btn = document.getElementById('btn-task-save');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                await runWithSyncStatus(addDoc(collection(db, ...tasksPath), {
+                    title: document.getElementById('task-title').value,
+                    desc: document.getElementById('task-desc').value,
+                    assigneeId: document.getElementById('task-assignee').value,
+                    difficulty: parseInt(document.getElementById('task-difficulty').value),
+                    dueDateMs: new Date(document.getElementById('task-duedate').value).getTime(),
+                    status: 'todo', creatorId: currentUserProfile.uid, createdAt: serverTimestamp(), completedAtMs: null
+                }));
+                const taskTitle = document.getElementById('task-title').value;
+                logActivity(currentLang === 'th' ? `สร้างงานใหม่ "${taskTitle}"` : `Created new task "${taskTitle}"`);
+                showToast(t('toast.taskAdded'), "success");
+                closeModal('task-modal');
+            } catch (error) { 
+                showToast(t('toast.saveError'), "error"); 
+            } 
+            finally { btn.disabled = false; btn.textContent = t('profile.save'); }
+        });
+
+        // --- EXTENDED TASK ACTION LOGIC ---
+        let currentSelectElement = null;
+        let previousSelectValue = null;
+
+        window.handleTaskAction = function(taskId, action, currentTitle, oldStatus, selectElement) {
+            if (!currentUserProfile) return;
+            
+            // Block actions for guest users
+            if (isGuestMode) {
+                showToast(t('toast.guestNoEdit'), "error");
+                if(selectElement) selectElement.value = oldStatus;
+                return;
+            }
+            
+            currentSelectElement = selectElement;
+            previousSelectValue = oldStatus;
+
+            if (action === 'done') {
+                document.getElementById('done-task-id').value = taskId;
+                document.getElementById('done-task-title').value = currentTitle;
+                document.getElementById('done-report').value = '';
+                document.getElementById('done-modal').classList.remove('hidden');
+                return; // Wait for modal
+            } 
+            
+            if (action === 'extend') {
+                document.getElementById('extend-task-id').value = taskId;
+                document.getElementById('extend-task-title').value = currentTitle;
+                document.getElementById('extend-form').reset();
+                
+                const currentTask = tasks.find(t => t.id === taskId);
+                if(currentTask) {
+                    const d = new Date(currentTask.dueDateMs);
+                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                    document.getElementById('extend-new-date').value = d.toISOString().slice(0, 16);
+                }
+                
+                document.getElementById('extend-modal').classList.remove('hidden');
+                return; // Wait for modal
+            }
+
+            // Normal status change (todo, doing)
+            executeStatusChange(taskId, action, currentTitle);
+        }
+
+        window.cancelDoneAction = function() {
+            document.getElementById('done-modal').classList.add('hidden');
+            if(currentSelectElement) {
+                // Must fetch element again incase of re-render
+                const actualSelect = document.getElementById(currentSelectElement.id);
+                if(actualSelect) actualSelect.value = previousSelectValue;
+            }
+        }
+
+        window.cancelExtendAction = function() {
+            document.getElementById('extend-modal').classList.add('hidden');
+            if(currentSelectElement) {
+                const actualSelect = document.getElementById(currentSelectElement.id);
+                if(actualSelect) actualSelect.value = previousSelectValue;
+            }
+        }
+
+        window.submitDoneReport = async function(e) {
+            e.preventDefault();
+            const taskId = document.getElementById('done-task-id').value;
+            const title = document.getElementById('done-task-title').value;
+            const report = document.getElementById('done-report').value;
+            
+            try {
+                await runWithSyncStatus(updateDoc(doc(db, ...tasksPath, taskId), { 
+                    status: 'done', 
+                    completedAtMs: Date.now(),
+                    completionReport: report
+                }));
+                logActivity(currentLang === 'th' ? `ส่งงาน "${title}" สำเร็จ` : `Submitted work "${title}" successfully`);
+                showToast(t('toast.doneSuccess'), "success");
+                document.getElementById('done-modal').classList.add('hidden');
+            } catch (error) { 
+                showToast(t('toast.updateError'), "error"); 
+                cancelDoneAction();
+            }
+        }
+
+        window.submitExtensionRequest = async function(e) {
+            e.preventDefault();
+            const taskId = document.getElementById('extend-task-id').value;
+            const title = document.getElementById('extend-task-title').value;
+            const newDateStr = document.getElementById('extend-new-date').value;
+            const newDateMs = new Date(newDateStr).getTime();
+            const reason = document.getElementById('extend-reason').value;
+            const progress = document.getElementById('extend-progress').value;
+
+            try {
+                await runWithSyncStatus(updateDoc(doc(db, ...tasksPath, taskId), { 
+                    dueDateMs: newDateMs,
+                    extensionData: {
+                        reason: reason,
+                        progress: progress,
+                        requestedAt: Date.now()
+                    }
+                }));
+                logActivity(currentLang === 'th' ? `ขอขยายเวลาส่งงาน "${title}"` : `Requested extension for "${title}"`);
+                showToast(t('toast.extendSuccess'), "success");
+                document.getElementById('extend-modal').classList.add('hidden');
+                
+                // Status remains the same, reset dropdown visually
+                if(currentSelectElement) {
+                    const actualSelect = document.getElementById(currentSelectElement.id);
+                    if(actualSelect) actualSelect.value = previousSelectValue;
+                }
+            } catch (error) { 
+                showToast(t('toast.saveError'), "error"); 
+                cancelExtendAction();
+            }
+        }
+
+        async function executeStatusChange(taskId, newStatus, currentTitle) {
+            try {
+                await runWithSyncStatus(updateDoc(doc(db, ...tasksPath, taskId), { 
+                    status: newStatus, completedAtMs: null 
+                }));
+                const statusNames = currentLang === 'th' 
+                    ? { 'todo': 'รอดำเนินการ', 'doing': 'กำลังทำ', 'done': 'เสร็จสิ้น' }
+                    : { 'todo': 'To Do', 'doing': 'In Progress', 'done': 'Completed' };
+                logActivity(currentLang === 'th' 
+                    ? `ย้ายงาน "${currentTitle}" ไป ${statusNames[newStatus]}`
+                    : `Moved task "${currentTitle}" to ${statusNames[newStatus]}`);
+                showToast(t('toast.statusUpdated'), "success");
+            } catch (error) { 
+                showToast(t('toast.updateError'), "error"); 
+                if(currentSelectElement) {
+                    const actualSelect = document.getElementById(currentSelectElement.id);
+                    if(actualSelect) actualSelect.value = previousSelectValue;
+                }
+            }
+        }
+
+        async function logActivity(actionDesc) {
+            if (!currentUserProfile || isGuestMode) return;
+            try { await addDoc(collection(db, ...logsPath), { userId: currentUserProfile.uid, action: actionDesc, timestamp: serverTimestamp() }); } catch(e) {}
+        }
+
+        function getUserInfo(uid) {
+            if(!uid) return { 
+                name: currentLang === 'th' ? 'ไม่ระบุ' : 'Unassigned', 
+                avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=all' 
+            };
+            const u = allProfiles.find(x => x.uid === uid);
+            return u || { name: 'Unknown', avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${uid}` };
+        }
+
+        function renderBoard() {
+            const cols = { todo: [], doing: [], done: [] };
+            tasks.forEach(t => { if(cols[t.status]) cols[t.status].push(t); });
+
+            ['todo', 'doing', 'done'].forEach(status => {
+                const el = document.getElementById(`col-${status}`);
+                document.getElementById(`count-${status}`).textContent = cols[status].length;
+                el.innerHTML = '';
+
+                cols[status].sort((a,b) => a.dueDateMs - b.dueDateMs).forEach(task => {
+                    const assignee = getUserInfo(task.assigneeId);
+                    const due = new Date(task.dueDateMs);
+                    const isOverdue = Date.now() > task.dueDateMs && status !== 'done';
+                    
+                    const dueLabel = t('board.due');
+                    let timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md ${isOverdue ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}">
+                        <i class="far fa-clock"></i> ${dueLabel}: ${due.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', {day:'2-digit', month:'short'})} ${due.getHours()}:${String(due.getMinutes()).padStart(2,'0')}
+                    </span>`;
+
+                    if (status === 'done' && task.completedAtMs) {
+                        const diff = task.completedAtMs - task.dueDateMs;
+                        if (diff <= 0) timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 font-bold"><i class="fas fa-check"></i> ${t('board.ontime')}</span>`;
+                        else timeTag = `<span class="text-[10px] px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 font-bold"><i class="fas fa-exclamation-triangle"></i> ${t('board.late')}</span>`;
+                    }
+
+                    // Extra Details (Report or Extension)
+                    let extraInfo = '';
+                    if (status === 'done' && task.completionReport) {
+                        extraInfo = `<div class="mt-2 bg-green-50 dark:bg-green-900/20 p-2 rounded border border-green-100 dark:border-green-800/50 text-[10px] text-green-800 dark:text-green-300">
+                            <strong><i class="fas fa-comment-dots"></i> ${t('board.result')}:</strong> ${task.completionReport.replace(/</g, "&lt;")}
+                        </div>`;
+                    } else if (status !== 'done' && task.extensionData) {
+                        extraInfo = `<div class="mt-2 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-100 dark:border-amber-800/50 text-[10px] text-amber-800 dark:text-amber-300">
+                            <strong><i class="fas fa-history"></i> ${t('board.extended')}:</strong> ${task.extensionData.reason.replace(/</g, "&lt;")}
+                        </div>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow relative group";
+                    
+                    // Create select element separately to avoid escaping issues
+                    const selectId = `select-${task.id}`;
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] uppercase font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded">${t('board.weight')}: ${task.difficulty}</span>
+                            <select id="${selectId}" class="text-xs border border-gray-200 dark:border-gray-600 rounded text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 cursor-pointer outline-none px-1 py-0.5">
+                                <option value="">${t('board.manage')}</option>
+                                <option value="todo" ${status==='todo'?'selected':''}>${t('board.todo')}</option>
+                                <option value="doing" ${status==='doing'?'selected':''}>${t('board.doing')}</option>
+                                <option value="done" ${status==='done'?'selected':''}>${t('board.submitWork')}</option>
+                                ${status !== 'done' ? `<option value="extend">${t('board.extend')}</option>` : ''}
+                            </select>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-sm leading-tight">${task.title.replace(/</g, "&lt;")}</h4>
+                        ${task.desc ? `<p class="text-[11px] text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">${task.desc.replace(/</g, "&lt;")}</p>` : ''}
+                        
+                        ${extraInfo}
+
+                        <div class="mt-3 flex items-center justify-between gap-2">
+                            <div class="flex items-center space-x-2" title="${assignee.name}">
+                                <img src="${assignee.avatar}" class="w-5 h-5 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover">
+                                <span class="text-[10px] font-medium text-gray-600 dark:text-gray-400 truncate max-w-[60px]">${assignee.name.split(' ')[0]}</span>
+                            </div>
+                            ${timeTag}
+                        </div>
+                    `;
+                    el.appendChild(card);
+                    
+                    // Attach event listener after element is added to DOM
+                    const selectElement = document.getElementById(selectId);
+                    if(selectElement) {
+                        selectElement.addEventListener('change', function() {
+                            if(this.value) {
+                                handleTaskAction(task.id, this.value, task.title, status, this);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function renderLogs() {
+            const list = document.getElementById('log-list');
+            list.innerHTML = '';
+            if(logs.length === 0) return list.innerHTML = `<li class="p-6 text-center text-gray-400">${t('logs.noActivity')}</li>`;
+
+            logs.slice(0, 30).forEach(log => {
+                const user = getUserInfo(log.userId);
+                let timeStr = log.timestamp ? `${log.timestamp.toDate().toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US')} ${log.timestamp.toDate().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US')}` : '';
+                list.innerHTML += `
+                    <li class="p-3 flex items-start space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <img src="${user.avatar}" class="w-8 h-8 rounded-lg border border-gray-200 dark:border-gray-600 shrink-0 object-cover">
+                        <div>
+                            <p class="text-xs text-gray-800 dark:text-gray-200"><span class="font-semibold">${user.name}</span> ${log.action.replace(/</g, "&lt;")}</p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5"><i class="far fa-clock"></i> ${timeStr}</p>
+                        </div>
+                    </li>`;
+            });
+        }
+
+        window.rateUser = async function(revieweeId, stars) {
+            if(!currentUserProfile) return;
+            
+            if (isGuestMode) {
+                showToast(t('toast.guestNoRate'), "error");
+                return;
+            }
+            
+            const reviewId = `${currentUserProfile.uid}_${revieweeId}`;
+            try {
+                await runWithSyncStatus(setDoc(doc(db, ...reviewsPath, reviewId), {
+                    reviewerId: currentUserProfile.uid, revieweeId: revieweeId, stars: stars, timestamp: serverTimestamp()
+                }));
+                const msg = t('toast.rated').replace('{stars}', stars);
+                showToast(msg);
+            } catch(e) { showToast(t('toast.ratingError'), "error"); }
+        }
+
+        function renderPeerReview() {
+            const container = document.getElementById('peer-review-list');
+            container.innerHTML = '';
+            if(!currentUserProfile && !isGuestMode) return;
+            
+            // Show message for guest users
+            if(isGuestMode) {
+                container.innerHTML = `<div class="col-span-1 md:col-span-2 text-center text-amber-600 dark:text-amber-400 p-6 bg-amber-50 dark:bg-amber-900/20 rounded-xl border-2 border-dashed border-amber-300 dark:border-amber-700"><i class="fas fa-eye text-3xl mb-3"></i><p class="font-medium">${t('review.guestMsg')}</p><p class="text-sm mt-1 opacity-75">${t('review.guestDesc')}</p></div>`;
+                return;
+            }
+            
+            const others = allProfiles.filter(u => u.uid !== currentUserProfile.uid);
+            if(others.length === 0) return container.innerHTML = `<div class="col-span-1 md:col-span-2 text-center text-gray-400 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">${t('review.noMembers')}</div>`;
+
+            others.forEach(user => {
+                const myReview = reviews.find(r => r.reviewerId === currentUserProfile.uid && r.revieweeId === user.uid);
+                const currentStars = myReview ? myReview.stars : 0;
+                let starsHtml = '';
+                for(let i=1; i<=5; i++) {
+                    const activeClass = i <= currentStars ? 'text-amber-500 active scale-110' : 'text-gray-300 dark:text-gray-600';
+                    starsHtml += `<i class="fas fa-star text-2xl mx-1 transition-all ${activeClass}" onclick="rateUser('${user.uid}', ${i})"></i>`;
+                }
+                
+                const ratingText = currentStars > 0 ? `${t('review.rated')} ${currentStars} ${t('review.stars')}` : t('review.notRated');
+
+                container.innerHTML += `
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center md:justify-between space-y-4 md:space-y-0 text-center md:text-left">
+                        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3">
+                            <img src="${user.avatar}" class="w-12 h-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100">${user.name}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${ratingText}</p>
+                            </div>
+                        </div>
+                        <div class="star-rating flex">${starsHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function getAverageStars(uid) {
+            const userReviews = reviews.filter(r => r.revieweeId === uid);
+            if(userReviews.length === 0) return 0;
+            return (userReviews.reduce((acc, r) => acc + r.stars, 0) / userReviews.length).toFixed(1);
+        }
+
+        function renderStarsStatic(avgStr) {
+            const avg = parseFloat(avgStr);
+            if(avg === 0) return `<span class="text-xs text-gray-400">${t('dash.noData')}</span>`;
+            let html = '';
+            for(let i=1; i<=5; i++) {
+                if(avg >= i) html += '<i class="fas fa-star text-amber-400"></i>';
+                else if(avg >= i - 0.5) html += '<i class="fas fa-star-half-alt text-amber-400"></i>';
+                else html += '<i class="far fa-star text-gray-300 dark:text-gray-600"></i>';
+            }
+            return `<span class="flex items-center justify-center space-x-1">${html} <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400 ml-1">(${avg})</span></span>`;
+        }
+
+        function updateDashboard() {
+            if(document.getElementById('view-dashboard').classList.contains('hidden')) return;
+            const total = tasks.length;
+            const doneTasks = tasks.filter(t => t.status === 'done');
+            let onTimeCount = 0, lateCount = 0;
+
+            doneTasks.forEach(t => {
+                if (t.completedAtMs && t.completedAtMs <= t.dueDateMs) onTimeCount++;
+                else lateCount++;
+            });
+
+            const progressPercent = total === 0 ? 0 : Math.round((doneTasks.length / total) * 100);
+            document.getElementById('dash-progress').textContent = `${progressPercent}%`;
+            document.getElementById('dash-total').textContent = total;
+            document.getElementById('dash-ontime').textContent = onTimeCount;
+            document.getElementById('dash-late').textContent = lateCount;
+            
+            const centerTotal = document.getElementById('total-tasks-center');
+            if(centerTotal) centerTotal.textContent = total;
+
+            let userStats = {};
+            allProfiles.forEach(u => { userStats[u.uid] = { name: u.name, avatar: u.avatar, totalAssigned: 0, doneTotal: 0, doneOnTime: 0, doneLate: 0, totalWeight: 0, score: 0 }; });
+
+            let globalTotalWeight = 0;
+            tasks.forEach(t => {
+                if(t.assigneeId && userStats[t.assigneeId]) {
+                    userStats[t.assigneeId].totalAssigned++;
+                    if(t.status === 'done') {
+                        userStats[t.assigneeId].doneTotal++; userStats[t.assigneeId].totalWeight += t.difficulty; globalTotalWeight += t.difficulty;
+                        if (t.completedAtMs <= t.dueDateMs) userStats[t.assigneeId].doneOnTime++; else userStats[t.assigneeId].doneLate++;
+                    }
+                }
+            });
+
+            const avgWeightPerUser = globalTotalWeight / (allProfiles.length || 1);
+            const perfLabels = [], perfData = [];
+            const tbody = document.getElementById('analytics-table-body');
+            tbody.innerHTML = '';
+
+            // Using Object.entries is much safer than finding keys by name
+            Object.entries(userStats).forEach(([userUid, stat]) => {
+                let timeScore = stat.doneTotal > 0 ? (stat.doneOnTime / stat.doneTotal) * 40 : 0;
+                let workScore = avgWeightPerUser > 0 ? Math.min(30, (stat.totalWeight / avgWeightPerUser) * 15) : 0;
+                const avgStars = getAverageStars(userUid);
+                let peerScore = avgStars > 0 ? (parseFloat(avgStars) / 5) * 30 : 15; 
+
+                stat.score = Math.min(100, Math.round(timeScore + workScore + peerScore));
+
+                if(stat.totalAssigned > 0 || avgStars > 0) { perfLabels.push(stat.name.split(' ')[0]); perfData.push(stat.score); }
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-indigo-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="py-3 px-4 min-w-[120px]">
+                            <div class="flex items-center space-x-3">
+                                <img src="${stat.avatar}" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shadow-sm shrink-0">
+                                <span class="font-semibold text-gray-800 dark:text-gray-100 truncate">${stat.name}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${stat.doneTotal}</span>
+                            <span class="text-xs text-gray-400 dark:text-gray-500"> / ${stat.totalAssigned}</span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <span class="text-green-600 dark:text-green-400 text-xs font-bold bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-md border border-green-200 dark:border-green-800">
+                                    <i class="fas fa-check text-[10px] mr-1"></i>${stat.doneOnTime}
+                                </span>
+                                <span class="text-red-500 dark:text-red-400 text-xs font-bold bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-md border border-red-200 dark:border-red-800">
+                                    <i class="fas fa-times text-[10px] mr-1"></i>${stat.doneLate}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-center min-w-[100px]">${renderStarsStatic(avgStars)}</td>
+                        <td class="py-3 px-4 text-center">
+                            ${stat.totalAssigned > 0 ? `
+                                <div class="inline-flex items-center space-x-2">
+                                    <span class="font-bold text-lg text-indigo-600 dark:text-indigo-400">${stat.score}%</span>
+                                    ${stat.score >= 80 ? '<i class="fas fa-trophy text-amber-500"></i>' : ''}
+                                </div>
+                            ` : `<span class="text-gray-400 dark:text-gray-600 font-normal text-sm">${t('dash.noData')}</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+            if (Object.values(userStats).length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400">${t('dash.noData')}</td></tr>`;
+
+            renderCharts(perfLabels, perfData, { todo: tasks.filter(t=>t.status==='todo').length, doing: tasks.filter(t=>t.status==='doing').length, done: doneTasks.length });
+        }
+
+        function updateChartColors() {
+            if(charts.perf) {
+                const isDark = document.documentElement.classList.contains('dark');
+                charts.perf.options.scales.x.ticks.color = isDark ? '#9ca3af' : '#4b5563';
+                charts.perf.options.scales.y.ticks.color = isDark ? '#9ca3af' : '#4b5563';
+                charts.perf.options.scales.x.grid.color = isDark ? '#374151' : '#e5e7eb';
+                charts.perf.options.scales.y.grid.color = isDark ? '#374151' : '#e5e7eb';
+                charts.perf.update();
+            }
+            if(charts.stat) {
+                const isDark = document.documentElement.classList.contains('dark');
+                charts.stat.options.plugins.legend.labels.color = isDark ? '#9ca3af' : '#4b5563';
+                charts.stat.data.datasets[0].borderColor = isDark ? '#1f2937' : '#ffffff';
+                charts.stat.update();
+            }
+        }
+
+        function renderCharts(perfLabels, perfData, statusCounts) {
+            if (typeof Chart === 'undefined') return; // Safegaurd against Chart JS not loading
+            
+            if(charts.perf) charts.perf.destroy();
+            if(charts.stat) charts.stat.destroy();
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#9ca3af' : '#4b5563';
+            const gridColor = isDark ? '#374151' : '#e5e7eb';
+
+            const ctxPerf = document.getElementById('performanceChart');
+            if(ctxPerf) {
+                charts.perf = new Chart(ctxPerf.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: perfLabels.length > 0 ? perfLabels : [t('dash.noData')],
+                        datasets: [{ 
+                            label: 'Score (%)', 
+                            data: perfData.length > 0 ? perfData : [0], 
+                            backgroundColor: perfData.map(score => {
+                                if(score >= 80) return 'rgba(34, 197, 94, 0.8)';
+                                if(score >= 60) return 'rgba(99, 102, 241, 0.8)';
+                                if(score >= 40) return 'rgba(251, 191, 36, 0.8)';
+                                return 'rgba(239, 68, 68, 0.8)';
+                            }),
+                            borderRadius: 6,
+                            borderWidth: 2,
+                            borderColor: perfData.map(score => {
+                                if(score >= 80) return 'rgba(34, 197, 94, 1)';
+                                if(score >= 60) return 'rgba(99, 102, 241, 1)';
+                                if(score >= 40) return 'rgba(251, 191, 36, 1)';
+                                return 'rgba(239, 68, 68, 1)';
+                            })
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        scales: { 
+                            y: { 
+                                beginAtZero: true, 
+                                max: 100, 
+                                ticks: { 
+                                    color: textColor,
+                                    callback: function(value) { return value + '%'; }
+                                }, 
+                                grid: { color: gridColor }
+                            },
+                            x: { 
+                                ticks: { color: textColor, font: { weight: 'bold' } }, 
+                                grid: { display: false } 
+                            }
+                        }, 
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = currentLang === 'th' ? 'คะแนน' : 'Score';
+                                        return label + ': ' + context.parsed.y + '%';
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                });
+            }
+
+            const ctxStat = document.getElementById('statusChart');
+            if(ctxStat) {
+                charts.stat = new Chart(ctxStat.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [t('board.todo'), t('board.doing'), t('board.done')],
+                        datasets: [{ 
+                            data: [statusCounts.todo, statusCounts.doing, statusCounts.done], 
+                            backgroundColor: ['#9ca3af', '#60a5fa', '#34d399'],
+                            borderWidth: 3,
+                            borderColor: isDark ? '#1f2937' : '#ffffff',
+                            hoverOffset: 8
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: true, 
+                        cutout: '70%', 
+                        plugins: { 
+                            legend: { 
+                                position: 'bottom',
+                                labels: { 
+                                    color: textColor,
+                                    padding: 15,
+                                    font: { size: 12, weight: 'bold' },
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                } 
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const value = context.parsed;
+                                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                        const taskLabel = currentLang === 'th' ? 'งาน' : 'tasks';
+                                        return context.label + ': ' + value + ' ' + taskLabel + ' (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                });
+            }
+        }
+
+        window.showToast = function(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const color = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${color} text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 text-sm toast opacity-0 translate-x-10`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message.replace(/</g, "&lt;")}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('opacity-0', 'translate-x-10'), 10);
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-x-10'); setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+    </script>
+</body>
+</html>
