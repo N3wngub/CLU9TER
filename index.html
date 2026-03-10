@@ -1379,6 +1379,8 @@
                 else await signInAnonymously(auth);
             } catch(e) {
                 console.error("Auth error", e);
+                const loadingText = document.getElementById('auth-loading-text');
+                if(loadingText) loadingText.innerHTML = "<span class='text-red-500 font-bold'>Auth Error<br>กรุณาเปิด Anonymous Auth</span>";
             }
 
             onAuthStateChanged(auth, async (user) => {
@@ -1386,6 +1388,8 @@
                     updateSyncUI(navigator.onLine ? 'online' : 'offline');
                     listenToProfiles();
                 } else {
+                    const loadingText = document.getElementById('auth-loading-text');
+                    if(loadingText) loadingText.innerHTML = "<span class='text-red-500 font-bold'>ไม่สามารถเชื่อมต่อฐานข้อมูลได้</span>";
                     showToast("ไม่สามารถเข้าถึงระบบได้", "error");
                 }
             });
@@ -1502,7 +1506,11 @@
                     // Guests still need dropdowns updated
                     renderAssigneeDropdown(); renderPeerReview(); updateDashboard();
                 }
-            }, e => console.error(e));
+            }, e => {
+                console.error("Firestore Permission Error:", e);
+                const loadingText = document.getElementById('auth-loading-text');
+                if(loadingText) loadingText.innerHTML = "<span class='text-red-500 text-[11px] md:text-xs font-bold'>Permission Denied<br>กรุณาตั้งค่า Firestore Rules</span>";
+            });
         }
 
         window.toggleManageProfiles = function() {
