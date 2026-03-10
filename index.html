@@ -275,36 +275,23 @@
         /* ปรับ datetime-local input บน mobile */
         @media (max-width: 640px) {
             input[type="datetime-local"] {
-                font-size: 10px !important;
-                padding-left: 0.625rem !important;
-                padding-right: 0.375rem !important;
-                letter-spacing: -0.02em !important;
+                font-size: 0.75rem !important; /* text-xs = 12px */
+                padding-left: 0.625rem !important; /* px-2.5 = 10px */
+                padding-right: 0.625rem !important;
+                letter-spacing: normal !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
             }
             input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-                font-size: 9px;
-                padding: 0;
-                margin-left: 1px;
-                margin-right: -2px;
-                width: 14px;
-                height: 14px;
+                margin-left: 4px;
+                flex-shrink: 0;
             }
             input[type="datetime-local"]::-webkit-datetime-edit {
                 padding: 0;
-                margin-right: 2px;
             }
             input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
                 padding: 0;
                 margin: 0;
-            }
-            input[type="datetime-local"]::-webkit-datetime-edit-text {
-                padding: 0 1px;
-            }
-            input[type="datetime-local"]::-webkit-datetime-edit-month-field,
-            input[type="datetime-local"]::-webkit-datetime-edit-day-field,
-            input[type="datetime-local"]::-webkit-datetime-edit-year-field,
-            input[type="datetime-local"]::-webkit-datetime-edit-hour-field,
-            input[type="datetime-local"]::-webkit-datetime-edit-minute-field {
-                padding: 0 1px;
             }
         }
 
@@ -887,6 +874,10 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-1.5 sm:space-x-2">
+                        <button onclick="syncCalendar()" class="px-2.5 py-1.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition-all text-[10px] sm:text-xs md:text-sm font-semibold active:scale-95 flex items-center space-x-1 sm:space-x-1.5" id="calendar-sync-btn" title="Sync Calendar">
+                            <i class="fas fa-sync-alt text-[10px] sm:text-xs"></i>
+                            <span class="hidden sm:inline" id="calendar-sync-text">Sync</span>
+                        </button>
                         <button onclick="previousMonth()" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all flex items-center justify-center active:scale-95">
                             <i class="fas fa-chevron-left text-sm sm:text-base"></i>
                         </button>
@@ -1013,7 +1004,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fas fa-calendar-alt text-gray-400 mr-1.5"></i><span id="label-task-duedate">กำหนดส่ง</span> <span class="text-red-500">*</span></label>
-                        <input type="datetime-local" id="task-duedate" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all">
+                        <input type="datetime-local" id="task-duedate" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]">
                     </div>
                 </div>
                 
@@ -1093,7 +1084,7 @@
                 
                 <div>
                     <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5" id="label-extend-date">กำหนดส่งใหม่ที่ต้องการ <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" id="extend-new-date" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-sm focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none transition-all">
+                    <input type="datetime-local" id="extend-new-date" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2.5 md:px-3 py-2.5 md:py-3 text-xs md:text-sm focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none transition-all cursor-pointer h-11 md:h-[50px]">
                 </div>
 
                 <div>
@@ -1179,6 +1170,11 @@
                 'header.calendar': 'ปฏิทินงาน',
                 'header.addTask': 'สร้างงานใหม่',
                 'header.online': 'กำลังออนไลน์',
+                
+                // Calendar
+                'calendar.sync': 'ซิงค์',
+                'calendar.syncing': 'กำลังซิงค์...',
+                'calendar.synced': 'ซิงค์สำเร็จ',
                 
                 // Settings
                 'settings.title': 'ตั้งค่า',
@@ -1357,6 +1353,16 @@
                 'header.review': 'Peer Review',
                 'header.logs': 'Activity History',
                 'header.calendar': 'Task Calendar',
+                'header.addTask': 'Add Task',
+                'header.online': 'Online',
+                
+                // Calendar
+                'calendar.sync': 'Sync',
+                'calendar.syncing': 'Syncing...',
+                'calendar.synced': 'Synced Successfully',
+                
+                // Settings
+                'settings.title': 'Settings',
                 'header.addTask': 'Add Task',
                 'header.online': 'Online',
                 
@@ -1761,6 +1767,11 @@
             safeSetText('delete-confirm-warn', 'delete.warning');
             safeSetHtml('delete-confirm-label', t('delete.instruction'));
             safeSetText('btn-text-del-cancel', 'profile.cancel');
+            
+            // Calendar
+            safeSetText('calendar-sync-text', 'calendar.sync');
+            safeSetText('calendar-today-btn', currentLang === 'th' ? 'วันนี้' : 'Today');
+            safeSetText('calendar-header-title', currentLang === 'th' ? 'ปฏิทินงาน' : 'Task Calendar');
         }
         
         function initLanguage() {
@@ -3483,6 +3494,124 @@
             selectedDate = new Date();
             renderCalendar();
         }
+
+        window.syncCalendar = function() {
+            const btn = document.getElementById('calendar-sync-btn');
+            const icon = btn.querySelector('i');
+            const text = document.getElementById('calendar-sync-text');
+            
+            // Show syncing state
+            icon.classList.add('fa-spin');
+            if (text) text.textContent = t('calendar.syncing');
+            btn.disabled = true;
+            
+            try {
+                // Generate ICS file content
+                let icsContent = 'BEGIN:VCALENDAR\r\n';
+                icsContent += 'VERSION:2.0\r\n';
+                icsContent += 'PRODID:-//Teamwork Manager//Calendar//EN\r\n';
+                icsContent += 'CALSCALE:GREGORIAN\r\n';
+                icsContent += 'METHOD:PUBLISH\r\n';
+                icsContent += 'X-WR-CALNAME:Teamwork Manager Tasks\r\n';
+                icsContent += 'X-WR-TIMEZONE:Asia/Bangkok\r\n';
+                
+                // Add all tasks to calendar
+                tasks.forEach(task => {
+                    if (!task.dueDateMs) return;
+                    
+                    const dueDate = new Date(task.dueDateMs);
+                    const now = new Date();
+                    
+                    // Format dates for ICS (YYYYMMDDTHHMMSS)
+                    const formatICSDate = (date) => {
+                        const pad = (n) => n.toString().padStart(2, '0');
+                        return date.getFullYear() + 
+                               pad(date.getMonth() + 1) + 
+                               pad(date.getDate()) + 'T' +
+                               pad(date.getHours()) + 
+                               pad(date.getMinutes()) + 
+                               pad(date.getSeconds());
+                    };
+                    
+                    // Get assignee name
+                    let assigneeName = '';
+                    if (task.assigneeId === 'everyone') {
+                        assigneeName = t('task.everyone');
+                    } else if (task.assigneeId) {
+                        const assignee = allProfiles.find(p => p.uid === task.assigneeId);
+                        assigneeName = assignee ? assignee.name : '';
+                    }
+                    
+                    // Get status emoji
+                    const statusEmoji = task.status === 'done' ? '✅' : task.status === 'doing' ? '🔄' : '📋';
+                    
+                    // Create event
+                    icsContent += 'BEGIN:VEVENT\r\n';
+                    icsContent += `UID:${task.id}@teamwork-manager\r\n`;
+                    icsContent += `DTSTAMP:${formatICSDate(now)}\r\n`;
+                    icsContent += `DTSTART:${formatICSDate(dueDate)}\r\n`;
+                    icsContent += `DTEND:${formatICSDate(new Date(dueDate.getTime() + 3600000))}\r\n`; // +1 hour
+                    icsContent += `SUMMARY:${statusEmoji} ${task.title}\r\n`;
+                    
+                    // Add description
+                    let description = '';
+                    if (task.desc) description += task.desc + '\\n\\n';
+                    if (task.category) description += `Category: ${task.category}\\n`;
+                    if (assigneeName) description += `Assignee: ${assigneeName}\\n`;
+                    description += `Difficulty: ${task.difficulty || 3} pts\\n`;
+                    description += `Status: ${task.status || 'todo'}`;
+                    icsContent += `DESCRIPTION:${description}\r\n`;
+                    
+                    // Add category/project
+                    if (task.category) {
+                        icsContent += `CATEGORIES:${task.category}\r\n`;
+                    }
+                    
+                    // Add status
+                    if (task.status === 'done') {
+                        icsContent += 'STATUS:COMPLETED\r\n';
+                    } else if (task.status === 'doing') {
+                        icsContent += 'STATUS:IN-PROCESS\r\n';
+                    } else {
+                        icsContent += 'STATUS:NEEDS-ACTION\r\n';
+                    }
+                    
+                    // Add priority based on difficulty
+                    const priority = task.difficulty >= 4 ? 1 : task.difficulty >= 3 ? 5 : 9;
+                    icsContent += `PRIORITY:${priority}\r\n`;
+                    
+                    icsContent += 'END:VEVENT\r\n';
+                });
+                
+                icsContent += 'END:VCALENDAR\r\n';
+                
+                // Create blob and download
+                const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'teamwork-tasks.ics';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                // Show success
+                showToast(t('calendar.synced'), 'success');
+                
+            } catch (error) {
+                console.error('Calendar sync error:', error);
+                showToast(currentLang === 'th' ? 'เกิดข้อผิดพลาดในการซิงค์' : 'Sync error', 'error');
+            } finally {
+                // Reset button state
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                    if (text) text.textContent = t('calendar.sync');
+                    btn.disabled = false;
+                }, 1000);
+            }
+        }
+
 
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
