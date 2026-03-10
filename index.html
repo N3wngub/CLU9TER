@@ -262,8 +262,8 @@
         /* ซ่อนตัวอักษรบน Dock เมื่อหน้าจอเล็ก เพื่อให้เหลือแต่ไอคอน */
         @media (max-width: 600px) {
             .dock-text { display: none !important; }
-            .dock-btn { min-width: 45px !important; padding: 0.75rem 1.25rem !important; flex-direction: row !important; }
-            .dock-icon { margin-right: 0 !important; margin-bottom: 0 !important; font-size: 1.25rem !important; }
+            .dock-btn { min-width: 40px !important; padding: 0.5rem 0.75rem !important; flex-direction: row !important; }
+            .dock-icon { margin-right: 0 !important; margin-bottom: 0 !important; font-size: 1.125rem !important; }
         }
         
         /* ป้องกันการเลื่อนแนวนอนในฟอร์ม */
@@ -734,7 +734,7 @@
                     </div>
                 </div>
 
-                <!-- Performance Table -->
+                <!-- Performance Cards -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden w-full">
                     <div class="p-3 md:p-5 bg-gradient-to-r from-indigo-50 to-white dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
                         <h3 class="font-bold text-sm md:text-lg text-gray-800 dark:text-gray-200 flex items-center">
@@ -742,21 +742,8 @@
                             <span id="dash-indiv-title">ประสิทธิภาพรายบุคคล</span>
                         </h3>
                     </div>
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left text-xs md:text-sm whitespace-nowrap min-w-[500px]">
-                            <thead class="bg-gray-50/80 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border-b border-gray-200 dark:border-gray-600 text-[10px] md:text-sm uppercase tracking-wider">
-                                <tr>
-                                    <th class="py-2.5 md:py-4 px-3 md:px-4 font-bold" id="th-member">สมาชิก</th>
-                                    <th class="py-2.5 md:py-4 px-2 md:px-4 text-center font-bold" id="th-tasks">งานที่ทำ</th>
-                                    <th class="py-2.5 md:py-4 px-2 md:px-4 text-center font-bold" id="th-ontime">ตรงเวลา/ล่าช้า</th>
-                                    <th class="py-2.5 md:py-4 px-2 md:px-4 text-center font-bold" id="th-peer">คะแนนเพื่อน</th>
-                                    <th class="py-2.5 md:py-4 px-3 md:px-4 text-center font-bold text-indigo-600 dark:text-indigo-400">
-                                        <i class="fas fa-trophy mr-1 text-amber-500"></i><span id="th-score">Score</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-table-body" class="divide-y divide-gray-100 dark:divide-gray-700 text-gray-800 dark:text-gray-200"></tbody>
-                        </table>
+                    <div id="analytics-cards-container" class="p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                        <!-- Performance cards will be rendered here -->
                     </div>
                 </div>
             </div>
@@ -843,31 +830,31 @@
     </main>
 
     <!-- Floating Dock Navbar -->
-    <nav class="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full px-2 py-2 flex items-center space-x-1 md:space-x-2 transition-all">
-        <button onclick="switchTab('board')" id="dock-board" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 font-semibold min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-tasks text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-board-text">Board</span>
+    <nav class="fixed bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full px-1.5 py-1.5 md:px-2 md:py-2 flex items-center space-x-0.5 md:space-x-2 transition-all">
+        <button onclick="switchTab('board')" id="dock-board" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 font-semibold min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-tasks text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-board-text">Board</span>
         </button>
-        <button onclick="switchTab('calendar')" id="dock-calendar" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-calendar-alt text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-calendar-text">Calendar</span>
+        <button onclick="switchTab('calendar')" id="dock-calendar" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-calendar-alt text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-calendar-text">Calendar</span>
         </button>
-        <button onclick="switchTab('dashboard')" id="dock-dashboard" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-chart-pie text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-dash-text">Dash</span>
+        <button onclick="switchTab('dashboard')" id="dock-dashboard" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-chart-pie text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-dash-text">Dash</span>
         </button>
-        <button onclick="switchTab('review')" id="dock-review" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-star text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-review-text">Review</span>
+        <button onclick="switchTab('review')" id="dock-review" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-star text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-review-text">Review</span>
         </button>
-        <button onclick="switchTab('logs')" id="dock-logs" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-history text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-logs-text">Logs</span>
+        <button onclick="switchTab('logs')" id="dock-logs" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-history text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-logs-text">Logs</span>
         </button>
         <!-- Settings in Dock -->
-        <button onclick="openSettingsModal()" id="dock-settings" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
-            <i class="fas fa-cog text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[10px] md:text-sm mt-1 md:mt-0 whitespace-nowrap" id="dock-settings-text">Settings</span>
+        <button onclick="openSettingsModal()" id="dock-settings" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
+            <i class="fas fa-cog text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-settings-text">Settings</span>
         </button>
     </nav>
 
@@ -1966,7 +1953,7 @@
                             ${lockIcon}
                             ${overlay}
                         </div>
-                        <span class="text-gray-800 dark:text-gray-200 transition-colors text-xs sm:text-[11px] md:text-sm lg:text-base font-semibold text-center px-1.5 w-full break-words line-clamp-2 leading-tight">${profile.name}</span>
+                        <span class="text-gray-800 dark:text-gray-200 transition-colors text-xs sm:text-[11px] md:text-sm lg:text-base font-semibold text-center w-full break-words line-clamp-2 leading-tight">${profile.name}</span>
                     </div>
                 `;
             });
@@ -1977,7 +1964,7 @@
                         <div class="w-32 h-32 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 mb-2 sm:mb-2.5 md:mb-3 border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 rounded-2xl sm:rounded-xl md:rounded-2xl flex items-center justify-center text-4xl sm:text-2xl md:text-4xl transition-all duration-300 bg-gray-50/80 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 hover:border-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-400 shadow-sm hover:shadow-xl ring-0 hover:ring-4 hover:ring-indigo-500/30 dark:hover:ring-indigo-400/30 mx-auto">
                             <i class="fas fa-plus"></i>
                         </div>
-                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-xs sm:text-[11px] md:text-sm lg:text-base font-medium text-center px-1.5 w-full">${t('profile.add')}</span>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors text-xs sm:text-[11px] md:text-sm lg:text-base font-medium text-center w-full break-words line-clamp-2 leading-tight">${t('profile.add')}</span>
                     </div>
                 `;
             }
@@ -2960,11 +2947,13 @@
                 const user = getUserInfo(log.userId);
                 let timeStr = log.timestamp ? `${log.timestamp.toDate().toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US')} ${log.timestamp.toDate().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US')}` : '';
                 list.innerHTML += `
-                    <li class="p-3 md:p-4 flex items-start space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all list-item" style="animation-delay: ${index * 0.02}s">
-                        <img src="${user.avatar}" class="w-8 h-8 rounded-xl border border-gray-200 dark:border-gray-600 shrink-0 object-cover bg-white dark:bg-gray-800">
-                        <div class="flex-1">
-                            <p class="text-xs md:text-sm text-gray-800 dark:text-gray-200 leading-snug"><span class="font-bold text-indigo-600 dark:text-indigo-400">${user.name}</span> ${log.action.replace(/</g, "&lt;")}</p>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1"><i class="far fa-clock"></i> ${timeStr}</p>
+                    <li class="p-3 md:p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all list-item" style="animation-delay: ${index * 0.02}s">
+                        <div class="flex items-start space-x-3">
+                            <img src="${user.avatar}" class="w-10 h-10 md:w-11 md:h-11 rounded-xl border-2 border-gray-200 dark:border-gray-600 shrink-0 object-cover bg-white dark:bg-gray-800 shadow-sm">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs md:text-sm text-gray-800 dark:text-gray-200 leading-snug"><span class="font-bold text-indigo-600 dark:text-indigo-400">${user.name}</span> ${log.action.replace(/</g, "&lt;")}</p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1.5"><i class="far fa-clock mr-1"></i>${timeStr}</p>
+                            </div>
                         </div>
                     </li>`;
             });
@@ -3008,19 +2997,26 @@
                 let starsHtml = '';
                 for(let i=1; i<=5; i++) {
                     const activeClass = i <= currentStars ? 'text-amber-500 active scale-110' : 'text-gray-300 dark:text-gray-600 hover:text-amber-300';
-                    starsHtml += `<i class="fas fa-star text-2xl md:text-3xl mx-1 transition-all ${activeClass}" onclick="rateUser('${user.uid}', ${i})"></i>`;
+                    starsHtml += `<i class="fas fa-star text-lg md:text-xl lg:text-2xl mx-0.5 transition-all ${activeClass}" onclick="rateUser('${user.uid}', ${i})"></i>`;
                 }
                 
-                const ratingText = currentStars > 0 ? `<span class="text-amber-600 dark:text-amber-400 font-bold"><i class="fas fa-check-circle mr-1"></i>${t('review.rated')} ${currentStars} ${t('review.stars')}</span>` : `<span class="text-gray-400">${t('review.notRated')}</span>`;
+                const ratingText = currentStars > 0 ? `<span class="text-amber-600 dark:text-amber-400 text-[10px] md:text-xs font-bold"><i class="fas fa-check-circle mr-1"></i>${currentStars} ดาว</span>` : `<span class="text-gray-400 text-[10px] md:text-xs">ยังไม่ได้ประเมิน</span>`;
 
                 container.innerHTML += `
-                    <div class="bg-white dark:bg-gray-800 p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center space-y-4 hover:shadow-md transition-all list-item" style="animation-delay: ${index * 0.05}s">
-                        <img src="${user.avatar}" class="w-16 h-16 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 object-cover shadow-sm">
-                        <div>
-                            <h4 class="text-base font-bold text-gray-800 dark:text-gray-100 mb-1">${user.name}</h4>
-                            <p class="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 px-3 py-1 rounded-full inline-block">${ratingText}</p>
+                    <div class="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all list-item" style="animation-delay: ${index * 0.05}s">
+                        <!-- Single Row: Profile + Name + Stars -->
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center space-x-2 md:space-x-3 flex-1 min-w-0">
+                                <img src="${user.avatar}" class="w-10 h-10 md:w-12 md:h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 object-cover shadow-sm shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-xs md:text-sm font-bold text-gray-800 dark:text-gray-100 truncate">${user.name}</h4>
+                                    <div class="mt-0.5">${ratingText}</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Star Rating -->
+                            <div class="star-rating flex bg-gray-50 dark:bg-gray-900 p-1.5 md:p-2 rounded-lg border border-gray-100 dark:border-gray-700 shrink-0">${starsHtml}</div>
                         </div>
-                        <div class="star-rating flex bg-gray-50 dark:bg-gray-900 p-2 rounded-full border border-gray-100 dark:border-gray-700">${starsHtml}</div>
                     </div>
                 `;
             });
@@ -3103,8 +3099,8 @@
 
             const avgWeightPerUser = globalTotalWeight / (allProfiles.length || 1);
             const perfLabels = [], perfData = [];
-            const tbody = document.getElementById('analytics-table-body');
-            tbody.innerHTML = '';
+            const container = document.getElementById('analytics-cards-container');
+            container.innerHTML = '';
 
             // Using Object.entries is much safer than finding keys by name
             Object.entries(userStats).forEach(([userUid, stat], index) => {
@@ -3117,41 +3113,55 @@
 
                 if(stat.totalAssigned > 0 || avgStars > 0) { perfLabels.push(stat.name.split(' ')[0]); perfData.push(stat.score); }
 
-                tbody.innerHTML += `
-                    <tr class="hover:bg-indigo-50/50 dark:hover:bg-gray-700/50 transition-all group list-item" style="animation-delay: ${index * 0.05}s">
-                        <td class="py-3 md:py-4 px-4 min-w-[120px]">
-                            <div class="flex items-center space-x-3">
-                                <img src="${stat.avatar}" class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 object-cover shadow-sm shrink-0 transition-transform group-hover:scale-110">
-                                <span class="font-bold text-xs md:text-sm text-gray-800 dark:text-gray-100 truncate">${stat.name}</span>
+                const scoreColor = stat.score >= 80 ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30' : 
+                                   stat.score >= 50 ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30' : 
+                                   'text-rose-500 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30';
+
+                container.innerHTML += `
+                    <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 list-item group" style="animation-delay: ${index * 0.05}s">
+                        <!-- Header with Avatar and Name -->
+                        <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+                            <img src="${stat.avatar}" class="w-12 h-12 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 object-cover shadow-sm transition-transform group-hover:scale-110">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold text-sm text-gray-800 dark:text-gray-100 truncate">${stat.name}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">${stat.doneTotal} / ${stat.totalAssigned} งาน</p>
                             </div>
-                        </td>
-                        <td class="py-3 md:py-4 px-4 text-center">
-                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-md transition-all group-hover:bg-indigo-100 group-hover:text-indigo-700 dark:group-hover:bg-indigo-900/30 dark:group-hover:text-indigo-400">${stat.doneTotal}</span>
-                            <span class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500 font-medium ml-1">/ ${stat.totalAssigned}</span>
-                        </td>
-                        <td class="py-3 md:py-4 px-4 text-center">
-                            <div class="flex items-center justify-center space-x-2">
-                                <span class="text-emerald-600 dark:text-emerald-400 text-[11px] font-bold bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded border border-emerald-200 dark:border-emerald-800 w-12 text-center transition-transform group-hover:scale-105">
-                                    <i class="fas fa-check text-[9px] mr-1"></i>${stat.doneOnTime}
-                                </span>
-                                <span class="text-rose-500 dark:text-rose-400 text-[11px] font-bold bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded border border-rose-200 dark:border-rose-800 w-12 text-center transition-transform group-hover:scale-105">
-                                    <i class="fas fa-times text-[9px] mr-1"></i>${stat.doneLate}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="py-3 md:py-4 px-4 text-center min-w-[110px]">${renderStarsStatic(avgStars)}</td>
-                        <td class="py-3 md:py-4 px-4 text-center">
                             ${stat.totalAssigned > 0 ? `
-                                <div class="inline-flex items-center justify-center space-x-1.5 w-full">
-                                    <span class="font-black text-base md:text-lg ${stat.score >= 80 ? 'text-emerald-600 dark:text-emerald-400' : (stat.score >= 50 ? 'text-indigo-600 dark:text-indigo-400' : 'text-rose-500')} transition-transform group-hover:scale-110">${stat.score}%</span>
-                                    ${stat.score >= 80 ? '<i class="fas fa-trophy text-amber-500 text-sm drop-shadow-sm transition-transform group-hover:rotate-12 group-hover:scale-125"></i>' : ''}
+                                <div class="flex flex-col items-center ${scoreColor} px-3 py-2 rounded-lg border-2 ${stat.score >= 80 ? 'border-emerald-200 dark:border-emerald-800' : stat.score >= 50 ? 'border-indigo-200 dark:border-indigo-800' : 'border-rose-200 dark:border-rose-800'}">
+                                    <span class="text-xl font-black">${stat.score}%</span>
+                                    ${stat.score >= 80 ? '<i class="fas fa-trophy text-amber-500 text-xs mt-0.5"></i>' : ''}
                                 </div>
-                            ` : `<span class="text-gray-400 dark:text-gray-600 font-medium text-[11px] md:text-xs">${t('dash.noData')}</span>`}
-                        </td>
-                    </tr>
+                            ` : `<span class="text-gray-400 dark:text-gray-600 text-xs">-</span>`}
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="space-y-2">
+                            <!-- On Time / Late -->
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600 dark:text-gray-400 font-medium">ตรงเวลา/ล่าช้า</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                                        <i class="fas fa-check text-[8px] mr-1"></i>${stat.doneOnTime}
+                                    </span>
+                                    <span class="text-rose-500 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-900/30 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800">
+                                        <i class="fas fa-times text-[8px] mr-1"></i>${stat.doneLate}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Peer Rating -->
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-600 dark:text-gray-400 font-medium">คะแนนเพื่อน</span>
+                                <div>${renderStarsStatic(avgStars)}</div>
+                            </div>
+                        </div>
+                    </div>
                 `;
             });
-            if (Object.values(userStats).length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-gray-400 text-sm font-medium list-item"><i class="fas fa-folder-open text-3xl mb-2 opacity-50 block"></i>${t('dash.noData')}</td></tr>`;
+            
+            if (Object.values(userStats).length === 0) {
+                container.innerHTML = `<div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 text-gray-400 text-sm font-medium list-item"><i class="fas fa-folder-open text-4xl mb-3 opacity-50 block"></i>${t('dash.noData')}</div>`;
+            }
 
             renderCharts(perfLabels, perfData, { todo: tasks.filter(task=>task.status==='todo').length, doing: tasks.filter(task=>task.status==='doing').length, done: doneTasks.length });
         }
@@ -3366,8 +3376,15 @@
                 });
                 
                 const cell = document.createElement('div');
-                cell.className = `min-h-[70px] sm:min-h-[90px] md:min-h-[110px] p-1.5 sm:p-2 cursor-pointer transition-all duration-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 active:scale-[0.98] ${isSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-2 ring-indigo-500 dark:ring-indigo-400' : 'bg-white dark:bg-gray-800 hover:shadow-md'}`;
+                cell.className = `min-h-[70px] sm:min-h-[90px] md:min-h-[110px] p-1.5 sm:p-2 cursor-pointer transition-all duration-200 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 active:scale-[0.98] relative ${isSelected ? 'bg-indigo-100 dark:bg-indigo-900/40 z-10' : 'bg-white dark:bg-gray-800 hover:shadow-md'}`;
                 cell.onclick = () => selectDate(date);
+                
+                // Add border for selected date
+                if (isSelected) {
+                    cell.style.border = '2px solid';
+                    cell.style.borderColor = document.documentElement.classList.contains('dark') ? 'rgb(129, 140, 248)' : 'rgb(99, 102, 241)';
+                    cell.style.margin = '-1px';
+                }
                 
                 let dayClass = 'text-gray-800 dark:text-gray-200';
                 if (date.getDay() === 0) dayClass = 'text-red-500 dark:text-red-400';
