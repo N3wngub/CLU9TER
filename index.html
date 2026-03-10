@@ -262,8 +262,8 @@
         /* ซ่อนตัวอักษรบน Dock เมื่อหน้าจอเล็ก เพื่อให้เหลือแต่ไอคอน */
         @media (max-width: 600px) {
             .dock-text { display: none !important; }
-            .dock-btn { min-width: 40px !important; padding: 0.5rem 0.75rem !important; flex-direction: row !important; }
-            .dock-icon { margin-right: 0 !important; margin-bottom: 0 !important; font-size: 1.125rem !important; }
+            .dock-btn { min-width: 48px !important; padding: 0.625rem 0.875rem !important; flex-direction: row !important; }
+            .dock-icon { margin-right: 0 !important; margin-bottom: 0 !important; font-size: 1.25rem !important; }
         }
         
         /* ป้องกันการเลื่อนแนวนอนในฟอร์ม */
@@ -472,6 +472,39 @@
                         <i class="fas fa-moon dark:hidden"></i>
                         <i class="fas fa-sun hidden dark:block text-amber-400"></i>
                     </button>
+                </div>
+
+                <!-- Quick Links Section -->
+                <div class="space-y-2.5">
+                    <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide px-1" id="settings-links-title">ลิงก์ด่วน / Quick Links</h4>
+                    
+                    <!-- NotebookLM Link -->
+                    <a href="https://notebooklm.google.com/notebook/dd9a65fb-0456-4944-9285-b13a95d2106c" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-4 rounded-xl border border-purple-100 dark:border-purple-800/50 hover:shadow-md transition-all group">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700 dark:text-gray-300 text-sm block">NotebookLM</span>
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400">เข้าใช้งาน Notebook</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-purple-400 dark:text-purple-500 text-sm group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+
+                    <!-- Google Drive Link -->
+                    <a href="https://drive.google.com/drive/folders/1B9DG2p32Fjf0dyKLwVo92v3HqIgFZEv1?usp=drive_link" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 hover:shadow-md transition-all group">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                <i class="fab fa-google-drive"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700 dark:text-gray-300 text-sm block">Google Drive</span>
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400">เข้าใช้งานด้วย Email @BUU</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-external-link-alt text-blue-400 dark:text-blue-500 text-sm group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
                 
                 <div class="pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2.5">
@@ -830,31 +863,31 @@
     </main>
 
     <!-- Floating Dock Navbar -->
-    <nav class="fixed bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full px-1.5 py-1.5 md:px-2 md:py-2 flex items-center space-x-0.5 md:space-x-2 transition-all">
-        <button onclick="switchTab('board')" id="dock-board" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 font-semibold min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-tasks text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-board-text">Board</span>
+    <nav class="fixed bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 z-50 dock-container bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-full px-2 py-2 md:px-2 md:py-2 flex items-center space-x-1 md:space-x-2 transition-all">
+        <button onclick="switchTab('board')" id="dock-board" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 font-semibold min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-tasks text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-board-text">Board</span>
         </button>
-        <button onclick="switchTab('calendar')" id="dock-calendar" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-calendar-alt text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-calendar-text">Calendar</span>
+        <button onclick="switchTab('calendar')" id="dock-calendar" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-calendar-alt text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-calendar-text">Calendar</span>
         </button>
-        <button onclick="switchTab('dashboard')" id="dock-dashboard" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-chart-pie text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-dash-text">Dash</span>
+        <button onclick="switchTab('dashboard')" id="dock-dashboard" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-chart-pie text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-dash-text">Dash</span>
         </button>
-        <button onclick="switchTab('review')" id="dock-review" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-star text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-review-text">Review</span>
+        <button onclick="switchTab('review')" id="dock-review" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-star text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-review-text">Review</span>
         </button>
-        <button onclick="switchTab('logs')" id="dock-logs" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-history text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-logs-text">Logs</span>
+        <button onclick="switchTab('logs')" id="dock-logs" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-history text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-logs-text">Logs</span>
         </button>
         <!-- Settings in Dock -->
-        <button onclick="openSettingsModal()" id="dock-settings" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-2.5 md:px-5 py-1.5 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[50px] md:min-w-[110px]">
-            <i class="fas fa-cog text-lg md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
-            <span class="dock-text text-[9px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-settings-text">Settings</span>
+        <button onclick="openSettingsModal()" id="dock-settings" class="dock-btn group flex flex-col md:flex-row items-center justify-center px-3 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium min-w-[60px] md:min-w-[110px]">
+            <i class="fas fa-cog text-xl md:text-lg dock-icon md:mr-2 group-hover:scale-110 transition-transform"></i>
+            <span class="dock-text text-[11px] md:text-sm mt-0.5 md:mt-0 whitespace-nowrap" id="dock-settings-text">Settings</span>
         </button>
     </nav>
 
@@ -911,7 +944,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fas fa-calendar-alt text-gray-400 mr-1.5"></i><span id="label-task-duedate">กำหนดส่ง</span> <span class="text-red-500">*</span></label>
-                        <input type="datetime-local" id="task-duedate" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-3 md:px-4 py-2.5 md:py-3 text-xs md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all h-11 md:h-[50px]">
+                        <input type="datetime-local" id="task-duedate" required class="w-full max-w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2 md:px-4 py-2.5 md:py-3 text-[10px] md:text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none transition-all h-11 md:h-[50px] overflow-hidden">
                     </div>
                 </div>
                 
@@ -991,7 +1024,7 @@
                 
                 <div>
                     <label class="block text-[11px] md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5" id="label-extend-date">กำหนดส่งใหม่ที่ต้องการ <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" id="extend-new-date" required class="w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-3 md:px-4 py-2.5 text-xs md:text-sm focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none transition-all h-10 md:h-[46px]">
+                    <input type="datetime-local" id="extend-new-date" required class="w-full max-w-full border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl px-2 md:px-4 py-2.5 text-[10px] md:text-sm focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none transition-all h-10 md:h-[46px] overflow-hidden">
                 </div>
 
                 <div>
@@ -1083,6 +1116,7 @@
                 'settings.language': 'ภาษา / Language',
                 'settings.theme': 'ธีม / Theme',
                 'settings.close': 'ปิด',
+                'settings.links': 'ลิงก์ด่วน',
                 
                 // Dashboard
                 'dash.progress': 'ความคืบหน้า',
@@ -1262,6 +1296,7 @@
                 'settings.language': 'Language / ภาษา',
                 'settings.theme': 'Theme / ธีม',
                 'settings.close': 'Close',
+                'settings.links': 'Quick Links',
                 
                 // Dashboard
                 'dash.progress': 'Progress',
@@ -1543,6 +1578,7 @@
             safeSetText('modal-settings-title', 'settings.title');
             safeSetText('settings-lang-label', 'settings.language');
             safeSetText('settings-theme-label', 'settings.theme');
+            safeSetText('settings-links-title', 'settings.links');
             safeSetText('settings-edit-profile-text', 'profile.edit');
             safeSetText('settings-logout-text', 'nav.logout');
             safeSetText('settings-exit-guest-text', 'nav.exitGuest');
